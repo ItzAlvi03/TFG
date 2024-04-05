@@ -1,0 +1,13 @@
+<div [ngClass]="alerta ? 'visible' : 'no-visible'" id="alert">{{mensaje}}</div>
+<div id="content" class="w-100 d-flex justify-content-center align-items-center">
+    <div id="loginContent" class="d-flex flex-column p-4">
+        <label>Nombre Usuario</label>
+        <input [(ngModel)]="inputNombre" type="text" name="nombre" id="nombre" placeholder="Nombre Usuario" class="mb-3">
+        <label>Contraseña</label>
+        <div class="w-100 d-flex mb-4">
+            <input [(ngModel)]="inputContrasenia" class="w-100" [attr.type]="mostrar ? 'password' : 'text'" name="contraseña" id="contrasenia" placeholder="Contraseña">
+            <i class="p-2" [ngClass]="mostrar ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" (click)="mostrar = !mostrar"></i>         
+        </div>
+        <button class="p-2" (click)="iniciarSesion()">Iniciar Sesion</button>
+    </div>
+</div>
