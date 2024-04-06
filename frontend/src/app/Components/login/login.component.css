@@ -1,7 +1,17 @@
 :host{
-    --blue: #54AEFF;
+    --blue: #0059c5;
     --gray: rgb(95, 95, 95);
-    --box-shadow: 0px 0px 4px 2px rgba(200, 200, 200, 0.65);
+    --box-shadow: 0px 0px 1.5px 1px rgba(255, 255, 255, 0.65);
+    --border-white: 1.5px solid white;
+}
+
+*,html{
+    color: white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+h2{
+    font-weight: 700;
 }
 
 #content{
@@ -16,20 +26,20 @@
 }
 
 #loginContent{
-    width: 32%;
+    width: 380px;
     height: auto;
     max-height: 50%;
     box-shadow: var(--box-shadow);
-    color: var(--gray);
     border-radius: 7px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #5f96e4c7;
+    padding: 2.5% 3.5%;
 }
 
 button{
     background-color: var(--blue);
-    border: 1.5px solid var(--gray);
-    border-radius: 3px;
-    font-weight: 600;
+    border: var(--border-white);
+    border-radius: 10px;
+    font-weight: 700;
 }
 
 label{
@@ -39,25 +49,62 @@ label{
 
 i{
     font-size: larger;
-    cursor: pointer;
-    transition: all 0.15s ease-in-out;
+    background-color: #58585856;
+    border: var(--border-white);
 }
 
-i:hover{
+#iconPassword{
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    border-left: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#iconPassword:hover{
     color: var(--blue);
 }
 
 input{
-    border: 1px solid rgba(0, 0, 0, 0.6);
     border-radius: 5px;
     font-size: medium;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: var(--border-white);
+}
+#inputGroup input{
+    border-right: 0;
+}
+
+input::placeholder {
+    font-size: medium;
+    color: white;
+}
+
+#checkbox{
+    margin-left: 1.5%;
+}
+
+#checkbox input{
+    margin-right: 2%;
+    cursor: pointer;
+}
+
+#checkbox input:checked{
+    background-color: var(--blue);
+}
+
+#checkbox label{
+    font-weight: 600;
+    font-size: medium;
+    cursor: pointer;
 }
 
 #alert{
     position: fixed;
     top: 11.5%;
     color: white;
-    background-color: red;
+    background-color: rgb(240, 54, 54);
     padding: 20px;
     width: auto;
     max-width: 50%;
@@ -89,6 +136,7 @@ input{
 @media (max-width: 690px){
     #loginContent{
         width: 65%;
+        padding: 5% 6%;
     }
 }
 @media (max-width: 490px){

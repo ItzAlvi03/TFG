@@ -1,13 +1,22 @@
 <div [ngClass]="alerta ? 'visible' : 'no-visible'" id="alert">{{mensaje}}</div>
 <div id="content" class="w-100 d-flex justify-content-center align-items-center">
-    <div id="loginContent" class="d-flex flex-column p-4">
-        <label>Nombre Usuario</label>
-        <input [(ngModel)]="inputNombre" type="text" name="nombre" id="nombre" placeholder="Nombre Usuario" class="mb-3">
-        <label>Contraseña</label>
-        <div class="w-100 d-flex mb-4">
-            <input [(ngModel)]="inputContrasenia" class="w-100" [attr.type]="mostrar ? 'password' : 'text'" name="contraseña" id="contrasenia" placeholder="Contraseña">
-            <i class="p-2" [ngClass]="mostrar ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" (click)="mostrar = !mostrar"></i>         
+    <div id="loginContent" class="d-flex flex-column justify-content-center align-items-center">
+        <h2 class="mb-3">Login</h2>
+        <div class="input-group mb-4 mt-2">
+            <i class="p-2 bi bi-person-fill input-group-text" id="basic-addon1"></i>
+            <input [(ngModel)]="inputNombre" type="text" class="form-control" placeholder="Nombre Usuario" aria-label="Username" aria-describedby="basic-addon1">
+          </div>
+        <div id="inputGroup" class="input-group mb-4 mt-2">
+            <i class="p-2 input-group-text bi bi-key-fill"></i>
+            <input [(ngModel)]="inputContrasenia" [attr.type]="mostrar ? 'password' : 'text'" name="contraseña" id="contrasenia" placeholder="Contraseña" class="form-control" aria-label="Amount (to the nearest dollar)">
+            <i id="iconPassword" [ngClass]="mostrar ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" (click)="mostrar = !mostrar" class="p-2 input-group-text"></i>
         </div>
-        <button class="p-2" (click)="iniciarSesion()">Iniciar Sesion</button>
+        <div id="checkbox" class="w-100 form-check mb-2">
+            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="rememberMe" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+              Recordarme
+            </label>
+        </div>
+        <button class="p-2 w-50 mt-3" (click)="iniciarSesion()">Iniciar Sesion</button>
     </div>
 </div>

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/Services/api.service';
 
 @Component({
@@ -6,14 +6,25 @@ import { ApiService } from 'src/app/Services/api.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent{
+export class LoginComponent implements OnInit{
   mostrar: boolean = true;
   mensaje: string = "Error al iniciar sesion";
   alerta: boolean = false;
   inputNombre: String = "";
   inputContrasenia: String = "";
+  rememberMe: boolean = false;
 
   constructor(private service: ApiService) {}
+
+  ngOnInit() {
+    const username = localStorage.getItem('username');
+    const password = localStorage.getItem('password');
+    this.inputNombre = username as String;
+    this.inputContrasenia = password as String;
+    if (username && password) {
+      this.rememberMe = true;
+    }
+  }
   
   async iniciarSesion() {
     if(this.inputNombre.length >= 5){
@@ -24,6 +35,14 @@ export class LoginComponent{
         }
         try {
           const response = await this.service.userLogin(user).toPromise();
+          // Accion del remember me para recordar credenciales correctas
+          if (this.rememberMe) {
+            localStorage.setItem('username', user.username);
+            localStorage.setItem('password', user.password);
+          } else {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
+          }
           
         } catch (error: any) {
           if (error && error.error && error.error.mensaje) {
