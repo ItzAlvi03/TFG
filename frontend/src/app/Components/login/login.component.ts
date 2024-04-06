@@ -19,11 +19,23 @@ export class LoginComponent{
     if(this.inputNombre.length >= 5){
       if(this.inputContrasenia.length >= 8){
         const user = {
-          nombre: this.inputNombre as string,
-          contrasenia: this.inputContrasenia as string
+          username: this.inputNombre as string,
+          password: this.inputContrasenia as string
         }
-        const response = await this.service.iniciarSesion(user).toPromise();
-        console.log(response);
+        try {
+          const response = await this.service.userLogin(user).toPromise();
+          
+        } catch (error: any) {
+          if (error && error.error && error.error.mensaje) {
+            this.mostrarMensaje(error.error.mensaje);
+          } else {
+            if (error.status === 500) {
+            this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.')
+          } else {
+            this.mostrarMensaje('Error desconocido.');
+          }
+        }
+        }
       }else{
         this.mostrarMensaje("La contraseña tiene que tener mínimo 8 carácteres.");
       }
@@ -38,6 +50,6 @@ export class LoginComponent{
     this.alerta = true;
     setTimeout(() =>{
       this.alerta = false;
-    },1500);
+    },2500);
   }
 }
