@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/Services/api.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit{
   inputContrasenia: String = "";
   rememberMe: boolean = false;
 
-  constructor(private service: ApiService) {}
+  constructor(private service: ApiService, private router: Router) {}
 
   ngOnInit() {
     const username = localStorage.getItem('username');
@@ -35,16 +36,21 @@ export class LoginComponent implements OnInit{
         }
         try {
           const response = await this.service.userLogin(user).toPromise();
-          // Accion del remember me para recordar credenciales correctas
-          if (this.rememberMe) {
-            localStorage.setItem('username', user.username);
-            localStorage.setItem('password', user.password);
-          } else {
-            localStorage.removeItem('username');
-            localStorage.removeItem('password');
+          if(response.token){
+            // Accion del remember me para recordar credenciales correctas
+            if (this.rememberMe) {
+              localStorage.setItem('username', user.username);
+              localStorage.setItem('password', user.password);
+            } else {
+              localStorage.removeItem('username');
+              localStorage.removeItem('password');
+            }
+            this.service.token.next(response.token as string);
+            this.router.navigate(['/inicio',]);
           }
           
         } catch (error: any) {
+          this.service.token.next('');
           if (error && error.error && error.error.mensaje) {
             this.mostrarMensaje(error.error.mensaje);
           } else {

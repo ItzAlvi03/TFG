@@ -1,0 +1,41 @@
+<div *ngIf="correcto" id="content">
+    <section class="d-flex flex-column justify-content-start" id="leftSection">
+        <img class="mb-4" src="../../../assets/images/logo.png" alt="" (click)="dentroSeccion = false; opcion = 0;">
+        <div id="opciones" class="w-100 h-100 d-flex flex-column justify-content-start">
+            <h5>Clientes</h5>
+            <ul>
+                <li id="opcion1" (click)="cambiarOpcion(1)">Dar de alta un cliente</li>
+                <li id="opcion2" (click)="cambiarOpcion(2)">Insertar pedido</li>
+                <li id="opcion3" (click)="cambiarOpcion(3)">Lista de pedidos</li>
+            </ul>
+            <h5>Facturas</h5>
+            <ul>
+                <li id="opcion4" (click)="cambiarOpcion(4)">Generar factura</li>
+                <li id="opcion5" (click)="cambiarOpcion(6)">Lista de facturas</li>
+            </ul>
+        </div>
+    </section>
+    <section class="d-flex flex-column" id="rightSection">
+        <header>
+            <i class="bi bi-box-arrow-in-left"></i>
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="dropdown">
+                    <button class="bi bi-translate dropbtn"><label>&#9660;</label></button>
+                    <div class="dropdown-content">
+                      <a>Español</a>
+                      <a>Inglés</a>
+                    </div>
+                  </div>
+            </div>
+            <i class="bi bi-person-circle"></i>
+        </header>
+        <div id="inicio">
+            <h1 *ngIf="!dentroSeccion">¡Bienvenido de nuevo <strong>{{username}}</strong>!</h1>
+            <app-dar-alta *ngIf="opcion == 1"></app-dar-alta>
+        </div>
+    </section>
+</div>
+<div *ngIf="!correcto" class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-absolute">
+    <img class="m-3" style="width: auto; max-width: 50%;" src="../../../assets/images/cara_triste.png" alt="">
+    <h1 class="m-3 text-center" style="width: auto; max-width: 50%; color: rgb(145, 145, 145); font-weight: 700;">{{errorMensaje}}</h1>
+</div>

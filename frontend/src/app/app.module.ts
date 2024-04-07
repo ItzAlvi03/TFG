@@ -6,12 +6,16 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './Components/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { PaginaInicioComponent } from './Components/pagina-inicio/pagina-inicio.component';
+import { DarAltaComponent } from './Components/pagina-inicio/clientes/dar-alta/dar-alta.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    PaginaInicioComponent,
+    DarAltaComponent
   ],
   imports: [
     BrowserModule,
