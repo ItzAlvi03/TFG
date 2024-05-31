@@ -9,11 +9,15 @@ export class ApiService {
   /**
    * API_URL - String - URL of the API that we are going to use
    */
-  private API_URL: String = "https://dulcestrinidad.pythonanywhere.com";
+  private API_URL: String = "http://127.0.0.1:5555";
   /**
-   * token - string - This variable will contain the token to access to the API
+   * rol - string - This variable contains de user rol on the API
    */
-  public token = new BehaviorSubject<string>('');
+  public rol = new BehaviorSubject<string>('');
+  /**
+   * username - string - This variable contains de username of the user
+   */
+  public username = new BehaviorSubject<string>('');
 
   constructor(private http: HttpClient) {}
   /**
@@ -27,7 +31,7 @@ export class ApiService {
    * @returns username and rol of the user or a message of the error
    */
   auth(): Observable<any>{
-    const token = {token: this.token.value}
+    const token = {token: localStorage.getItem("token") || ""}
     return this.http.post(this.API_URL + '/auth', token);
   }
 }

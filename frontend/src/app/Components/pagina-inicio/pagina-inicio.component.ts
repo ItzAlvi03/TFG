@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ApiService } from 'src/app/Services/api.service';
 
 @Component({
@@ -7,50 +8,58 @@ import { ApiService } from 'src/app/Services/api.service';
   styleUrls: ['./pagina-inicio.component.css']
 })
 export class PaginaInicioComponent implements OnInit{
+  /**
+   * username - string - Contains the user name's
+   */
   username: string = "";
+  /**
+   * rol - string - Contains the user's rol
+   */
   rol: string = "";
-  errorMensaje: string = ""; 
-  correcto!: boolean;
+  /**
+   * dentroSeccion - boolean - To check if the user is in other section
+   */
   dentroSeccion: boolean = false;
+  /**
+   * opcion - number - The specific section where the user is located
+   */
   opcion!: number;
   
-  constructor(private service: ApiService) {}
+  /**
+   * 
+   * @param service - ApiService - Angular Service to use the API.
+   * @param router - Router - Angular Class that allows the user to move through the different components.
+   */
+  constructor(private service: ApiService, private router: Router) {}
 
-  async ngOnInit(): Promise<void> {
-    // Este if y else es para que no se vea un pantallazo feo de la cara triste y luego se carga todo.
-    // De esta manera comprobamos que digamos empieza bien con el token o si no tiene el token vamos cargando
-    // la vista de error mientras llega el mensaje de error
-    this.service.token.next('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOjEsInJvbCI6ImVuY2FyZ2FkbyIsImV4cGlyYXRpb24iOiIyMDI0LTA0LTA3IDIxOjQ3OjQyLjg3OTc5MSJ9.cn0c82eLSR_SfAAYsoop84THYbWtkeJ1pmws0vInLII');
-    if(this.service.token.value === "")this.correcto = false;
-    else this.correcto = true;
-
-    try{
-      const response = await this.service.auth().toPromise();
-      if(response && response.username && response.rol) {
-        this.username = response.username;
-        this.rol = response.rol;
-      }
-      this.correcto = true;
-    } catch(error: any){
-      this.correcto = false;
-      if (error && error.error && error.error.mensaje) {
-        this.errorMensaje = error.error.mensaje;
-      } else {
-        if (error.status === 500) {
-        this.errorMensaje = 'Ha ocurrido un error en el servidor, inténtelo de nuevo.';
-        } else {
-          this.errorMensaje = 'Ha ocurrido un error en el servidor, inténtelo de nuevo.';
-        }
-      }
-    }
+  /**
+   * Method that executes before the view is loaded.
+   * Set the info of the user
+   */
+  ngOnInit(): void {
+    this.username = this.service.username.value;
+    this.rol = this.service.rol.value;
   }
 
+  /**
+   * Changes the differents sections
+   * 
+   * @param num - number - Number of the section to move
+   */
   cambiarOpcion(num: number) {
     const seccion = document.getElementById('opcion' + num) as any;
     if(seccion){
       this.dentroSeccion = true;
       this.opcion = num;
     }
+  }
+  
+  /**
+   * Method to leave the home page and return to login
+   */
+  clearToken() {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
   }
 
 }

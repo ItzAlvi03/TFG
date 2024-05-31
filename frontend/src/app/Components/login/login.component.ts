@@ -8,18 +8,46 @@ import { ApiService } from 'src/app/Services/api.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit{
+  /**
+   * mostrar - boolean - Hidde or see the password
+   */
   mostrar: boolean = true;
+  /**
+   * mensaje - string - This is the message of the pop up
+   */
   mensaje: string = "Error al iniciar sesion";
+  /**
+   * alerta - boolean - Activates or deactivate the pop up message
+   */
   alerta: boolean = false;
+  /**
+   * inputNombre - String - Var that contains the value of the username
+   */
   inputNombre: String = "";
+  /**
+   * inputContrasenia - String - Var that contains the value of the password
+   */
   inputContrasenia: String = "";
+  /**
+   * rememberMe - boolean - The value of the checkbox "remember me"
+   */
   rememberMe: boolean = false;
 
+  /**
+   * 
+   * @param service - ApiService - Angular Service to use the API.
+   * @param router - Router - Angular Class that allows the user to move through the different components.
+   */
   constructor(private service: ApiService, private router: Router) {}
 
+  /**
+   * Method that executes before the view is loaded.
+   * Check if the user has remember me option to autocomplete the inputs.
+   */
   ngOnInit() {
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
+    localStorage.removeItem("token");
+    const username = localStorage.getItem('username') || null;
+    const password = localStorage.getItem('password') || null;
     this.inputNombre = username as String;
     this.inputContrasenia = password as String;
     if (username && password) {
@@ -27,9 +55,12 @@ export class LoginComponent implements OnInit{
     }
   }
   
+  /**
+   * Metodo para comprobar las credenciales e iniciar sesión
+   */
   async iniciarSesion() {
     if(this.inputNombre.length >= 5){
-      if(this.inputContrasenia.length >= 8){
+      if(this.inputContrasenia.length >= 6){
         const user = {
           username: this.inputNombre as string,
           password: this.inputContrasenia as string
@@ -45,12 +76,11 @@ export class LoginComponent implements OnInit{
               localStorage.removeItem('username');
               localStorage.removeItem('password');
             }
-            this.service.token.next(response.token as string);
-            this.router.navigate(['/inicio',]);
+            localStorage.setItem("token", response.token);
+            this.router.navigate(['/home']);
           }
           
         } catch (error: any) {
-          this.service.token.next('');
           if (error && error.error && error.error.mensaje) {
             this.mostrarMensaje(error.error.mensaje);
           } else {
@@ -62,7 +92,7 @@ export class LoginComponent implements OnInit{
         }
         }
       }else{
-        this.mostrarMensaje("La contraseña tiene que tener mínimo 8 carácteres.");
+        this.mostrarMensaje("La contraseña tiene que tener mínimo 6 carácteres.");
       }
     }
     else{
@@ -70,6 +100,11 @@ export class LoginComponent implements OnInit{
     }
   }
 
+  /**
+   * Method to show the pop up with a specific message
+   * 
+   * @param texto - string - message to show on the pop up
+   */
   mostrarMensaje(texto: string){
     this.mensaje = texto;
     this.alerta = true;

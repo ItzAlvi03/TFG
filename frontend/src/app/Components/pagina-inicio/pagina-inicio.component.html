@@ -1,4 +1,4 @@
-<div *ngIf="correcto" id="content">
+<div id="content">
     <section class="d-flex flex-column justify-content-start" id="leftSection">
         <img class="mb-4" src="../../../assets/images/logo.png" alt="" (click)="dentroSeccion = false; opcion = 0;">
         <div id="opciones" class="w-100 h-100 d-flex flex-column justify-content-start">
@@ -17,7 +17,7 @@
     </section>
     <section class="d-flex flex-column" id="rightSection">
         <header>
-            <i class="bi bi-box-arrow-in-left"></i>
+            <i class="bi bi-box-arrow-in-left" (click)="clearToken()"></i>
             <div class="d-flex justify-content-center align-items-center">
                 <div class="dropdown">
                     <button class="bi bi-translate dropbtn"><label>&#9660;</label></button>
@@ -27,15 +27,20 @@
                     </div>
                   </div>
             </div>
-            <i class="bi bi-person-circle"></i>
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="dropdown">
+                    <button class="bi bi-person-circle dropbtn"></button>
+                    <div class="dropdown-content-user">
+                      <a>{{username}}</a>
+                      <hr>
+                      <a>{{rol}}</a>
+                    </div>
+                  </div>
+            </div>
         </header>
         <div id="inicio">
             <h1 *ngIf="!dentroSeccion">¡Bienvenido de nuevo <strong>{{username}}</strong>!</h1>
             <app-dar-alta *ngIf="opcion == 1"></app-dar-alta>
         </div>
     </section>
-</div>
-<div *ngIf="!correcto" class="w-100 h-100 d-flex flex-column justify-content-center align-items-center position-absolute">
-    <img class="m-3" style="width: auto; max-width: 50%;" src="../../../assets/images/cara_triste.png" alt="">
-    <h1 class="m-3 text-center" style="width: auto; max-width: 50%; color: rgb(145, 145, 145); font-weight: 700;">{{errorMensaje}}</h1>
 </div>

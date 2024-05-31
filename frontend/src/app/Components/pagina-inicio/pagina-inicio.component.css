@@ -140,7 +140,7 @@ header i:last-child{
 }
 
 .dropdown-content {
-    margin-top: 5%;
+    margin-top: -2%;
     display: none;
     position: absolute;
     background-color: white;
@@ -149,10 +149,31 @@ header i:last-child{
     border-radius: 6px;
     padding: 17% 25%;
     z-index: 1;
+    cursor: pointer;
+    color: black;
 }
 
-.dropdown-content a {
-    color: black;
+.dropdown-content-user {
+    margin-top: -2%;
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    width: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    border-radius: 6px;
+    padding: 17% 25%;
+    z-index: 1;
+    text-align: center;
+    color: var(--blue);
+    text-transform: uppercase;
+}
+
+.dropdown-content-user hr{
+    margin: 1% 0;
+}
+
+.dropdown-content a, .dropdown-content-user a {
     text-decoration: none;
     font-weight: 500;
     display: block;
@@ -164,7 +185,7 @@ header i:last-child{
   background-color: #ddd;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown:hover .dropdown-content, .dropdown:hover .dropdown-content-user {
   display: block;
 }
 
