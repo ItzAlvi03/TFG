@@ -20,7 +20,11 @@ CORS(app)
 def token_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        token = request.json['token']
+        data = request.json
+        if not data or 'token' not in data:
+            return jsonify({'mensaje': 'Falta el token.'}), 400
+
+        token = data['token']
 
         if not token:
             return jsonify({'mensaje': 'Falta el token.'}), 400
@@ -83,6 +87,44 @@ def user_login():
         
     except Exception as e:
         return jsonify({'mensaje': f'Error al buscar usuario: {e}'}), 500
+    
+#   SUMMARY: Endpoint to see if exists users in users.db
+#   RETURN: response 200(with the user) or response 500 (empty with no user)
+#   POST /userLogin
+#   VALUES: data(user info)
+@app.route('/insertClient', methods=['POST'])
+@token_required
+def insert_clients(payload):
+    try:
+        data = request.json
+        name = data['name']
+        email = data['email']
+        cif = data['cif']
+        address = data['address']
+        client_type = data['type']
+        bank_account = data['bank_account']
+
+        if not all([name, email, cif, address, client_type, bank_account]):
+            return jsonify({'error': 'not_enough_data.'}), 400
+        
+        client = (
+            name,
+            email,
+            cif,
+            address,
+            client_type,
+            bank_account
+        )
+        result = clients.insert_client(dbClients,client)
+        if result == "client_exists":
+            return jsonify({"error": result}), 400
+        elif result == "insert_error":
+            return jsonify({"error": result}), 400
+        else:
+            return jsonify({"mensaje": result}), 400
+        
+    except Exception as e:
+        return jsonify({'error': f'Error al insertar clientes: {e}'}), 500
     
 #   SUMMARY: Endpoint to check a token
 #   RETURN: response 200(with info about user) or response 400 (token invalid)

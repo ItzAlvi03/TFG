@@ -1,11 +1,11 @@
 createTablesSql = """CREATE TABLE "Clientes" (
 	"ClienteID"	INTEGER NOT NULL,
-	"Nombre"	TEXT NOT NULL,
-	"Email"	TEXT NOT NULL,
-	"CIF"	TEXT NOT NULL,
+	"Nombre"	TEXT NOT NULL UNIQUE,
+	"Email"	TEXT NOT NULL UNIQUE,
+	"CIF"	TEXT NOT NULL UNIQUE,
 	"Direccion"	TEXT NOT NULL,
 	"Tipo"	TEXT NOT NULL,
-	"Num_Cuenta_Bancaria"	TEXT NOT NULL,
+	"Num_Cuenta_Bancaria"	TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("ClienteID" AUTOINCREMENT)
     );
 
