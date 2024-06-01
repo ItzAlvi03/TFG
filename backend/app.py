@@ -14,6 +14,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'abe0ec61f6ca4091b1cee27ba20259eb'
 CORS(app)
 
+#   SUMMARY: Method to check all the tokens
+#   RETURN: response 200(with the token info) or response 400 (invalid token)
+#   VALUES: func(all the data from the endpoint)
 def token_required(func):
     @wraps(func)
     def decorated(*args, **kwargs):
@@ -57,7 +60,7 @@ def token_required(func):
 
 # @app.route('/swagger.json')
 # def index():
-#     with open('swagger.json', 'r') as f:
+#     with open('swagger.json', 'r') as f):
 #         return jsonify(json.load(f))
     
 #   SUMMARY: Endpoint to see if exists users in users.db
@@ -81,6 +84,10 @@ def user_login():
     except Exception as e:
         return jsonify({'mensaje': f'Error al buscar usuario: {e}'}), 500
     
+#   SUMMARY: Endpoint to check a token
+#   RETURN: response 200(with info about user) or response 400 (token invalid)
+#   POST /auth
+#   VALUES: payload(info inside of token)
 @app.route('/auth', methods=['POST'])
 @token_required
 def authenticator(payload):
@@ -89,6 +96,7 @@ def authenticator(payload):
         "id": payload.get('id'),
         "rol": payload.get('rol')
     })
+#endregion
 #Start the server
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5555, debug=True)
