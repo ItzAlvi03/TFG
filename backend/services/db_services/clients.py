@@ -22,6 +22,19 @@ def insert_client(dbClients, client):
             print(e)
             return "insert_error"
     
+#   SUMMARY: Method to see all clients with a specific name
+#   RETURN: client data or None
+#   VALUES: dbClients(BD PATH), name(client's name), client_type(particular/empresa)
+def search_all_clients(dbClients, name, client_type):
+    try:
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        check_sql = 'SELECT Nombre, Email, Tipo FROM Clientes WHERE Nombre LIKE "%' + name + '%" AND Tipo LIKE "' + client_type + '"'
+        cursor.execute(check_sql)
+        return cursor.fetchall()
+    except sqlite3.Error:
+        return None
+    
 #   SUMMARY: Method to see if the client exists
 #   RETURN: client data or None
 #   VALUES: dbClients(BD PATH), client(all client data)
