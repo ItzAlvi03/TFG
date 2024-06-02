@@ -1,11 +1,10 @@
-<div [ngClass]="alerta ? 'visible' : 'no-visible'" id="alert">{{mensaje}}</div>
 <div id="content" class="w-100 d-flex justify-content-center align-items-center">
     <div id="loginContent" class="d-flex flex-column justify-content-center align-items-center">
         <h2 class="mb-3">Login</h2>
         <div class="input-group mb-4 mt-2">
             <i class="p-2 bi bi-person-fill input-group-text" id="basic-addon1"></i>
             <input [(ngModel)]="inputNombre" type="text" class="form-control" placeholder="Nombre Usuario" aria-label="Username" aria-describedby="basic-addon1">
-          </div>
+        </div>
         <div id="inputGroup" class="input-group mb-4 mt-2">
             <i class="p-2 input-group-text bi bi-key-fill"></i>
             <input [(ngModel)]="inputContrasenia" [attr.type]="mostrar ? 'password' : 'text'" name="contraseña" id="contrasenia" placeholder="Contraseña" class="form-control" aria-label="Amount (to the nearest dollar)">

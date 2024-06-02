@@ -11,6 +11,8 @@ import { DarAltaComponent } from './Components/pagina-inicio/clientes/dar-alta/d
 import { AuthGuard } from './auth.guard';
 import { ApiService } from './Services/api.service';
 import { TokenInterceptor } from './Interceptor/token.interceptor';
+import { AlertComponent } from './Components/alert/alert.component';
+import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/insertar-pedido/insertar-pedido.component';
 
 
 @NgModule({
@@ -18,7 +20,9 @@ import { TokenInterceptor } from './Interceptor/token.interceptor';
     AppComponent,
     LoginComponent,
     PaginaInicioComponent,
-    DarAltaComponent
+    DarAltaComponent,
+    AlertComponent,
+    InsertarPedidoComponent
   ],
   imports: [
     BrowserModule,

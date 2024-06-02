@@ -1,0 +1,24 @@
+<div id="body">
+    <div class="pb-4" *ngIf="!clientSelected">
+        <div id="buscador" class="d-flex justify-content-between">
+            <div class="d-flex justify-content-center">
+                <input id="input1" (input)="cambiaValor(1)"  [(ngModel)]="name" type="text" placeholder="Nombre cliente">
+                <select id="clientType" [(ngModel)]="clientType" name="clientType" class="form-control" required>
+                    <option *ngFor="let type of clientTypes" [value]="type">↓ {{ type }}</option>
+                </select>
+            </div>
+            <button (click)="buscarClientes()" class="bi bi-search"></button>
+        </div>
+        <div *ngIf="resultados" id="resultados">
+            <div *ngFor="let client of clients" id="resultado">
+                <button (click)="selectClient(client)">Elegir</button>
+                <label>Nombre: <strong>{{ client.name }}</strong></label>
+                <label>Email: <strong>{{ client.email }}</strong></label>
+                <label>Tipo: <strong>{{ client.type }}</strong></label>
+            </div>
+        </div>
+    </div>
+    <div id="clientSelected" *ngIf="clientSelected">
+        <button (click)="this.clientSelected = false;">Cliente: <strong>{{ client.name }}</strong><i class="bi bi-x"></i></button>
+    </div>
+</div>

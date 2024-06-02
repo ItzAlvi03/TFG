@@ -1,0 +1,32 @@
+<div id="body">
+    <div id="form">
+        <h2 class="w-100 mb-4 text-center"><span>Datos Cliente</span></h2>
+        <div id="input1" class="input-group mb-3">
+            <i class="p-2 bi bi-person-fill input-group-text" id="basic-addon1"></i>
+            <input (input)="cambiaValor(1)" (blur)="pierdeFoco(1)"  [(ngModel)]="name" type="text" class="form-control" placeholder="Nombre cliente" aria-label="Nombre" aria-describedby="basic-addon1">
+        </div>
+        <div id="input2" class="input-group mb-3">
+            <i class="p-2 bi bi-envelope-at-fill input-group-text" id="basic-addon1"></i>
+            <input (blur)="pierdeFoco(2)"  [(ngModel)]="email" type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="basic-addon1">
+        </div>
+        <div id="input3" class="input-group mb-3">
+            <i class="p-2 bi bi-person-vcard-fill input-group-text" id="basic-addon1"></i>
+            <input (input)="cambiaValor(3)" (blur)="pierdeFoco(3)"  [(ngModel)]="cif" type="text" class="form-control" placeholder="CIF" aria-label="Nombre" aria-describedby="basic-addon1">
+        </div>
+        <div id="input4" class="input-group mb-3">
+            <i class="p-2 bi bi-house input-group-text" id="basic-addon1"></i>
+            <input (input)="cambiaValor(4)" (blur)="pierdeFoco(4)"  [(ngModel)]="address" type="text" class="form-control" placeholder="Dirección" aria-label="Dirección" aria-describedby="basic-addon1">
+        </div>
+        <div id="input5" class="input-group mb-3">
+            <i class="p-2 bi bi-bank2 input-group-text" id="basic-addon1"></i>
+            <input (input)="cambiaValor(5)" (blur)="pierdeFoco(5)"  [(ngModel)]="bankAccount" type="text" class="form-control" placeholder="Cuenta bancaria" aria-label="Cuenta bancaria" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group mb-3">
+            <i class="p-2 bi bi-person-raised-hand input-group-text" id="basic-addon1"></i>
+            <select id="clientType" [(ngModel)]="clientType" name="clientType" class="form-control" required>
+                <option *ngFor="let type of clientTypes" [value]="type">{{ type }}</option>
+            </select>
+        </div>
+        <button (click)="insertClient()" class="p-2 mt-3">Añadir cliente</button>
+    </div>
+</div>

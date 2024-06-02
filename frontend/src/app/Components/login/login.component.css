@@ -100,28 +100,6 @@ input::placeholder {
     cursor: pointer;
 }
 
-#alert{
-    position: fixed;
-    top: 11.5%;
-    color: white;
-    background-color: rgb(240, 54, 54);
-    padding: 20px;
-    width: auto;
-    max-width: 50%;
-    font-weight: 600;
-    border-radius: 8px;
-    transition: right 0.3s ease-out;
-    z-index: 3;
-}
-
-.no-visible{    
-    right: -70%;
-}
-
-.visible{
-    right: 5%;
-}
-
 @media (max-width: 1175px){
     #loginContent{
         width: 40%;
@@ -143,8 +121,5 @@ input::placeholder {
 @media (max-width: 490px){
     #loginContent{
         width: 80%;
-    }
-    #alert{
-        max-width: 65%;
     }
 }

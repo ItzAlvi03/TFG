@@ -1,0 +1,2 @@
+<div *ngIf="!correct" class="no-correct" [ngClass]="alerta ? 'visible' : 'no-visible'" id="alert">{{mensaje}}</div>
+<div *ngIf="correct" class="correct" [ngClass]="alerta ? 'visible' : 'no-visible'" id="alert">{{mensaje}}</div>

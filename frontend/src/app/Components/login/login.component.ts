@@ -13,14 +13,6 @@ export class LoginComponent implements OnInit{
    */
   mostrar: boolean = true;
   /**
-   * mensaje - string - This is the message of the pop up
-   */
-  mensaje: string = "Error al iniciar sesion";
-  /**
-   * alerta - boolean - Activates or deactivate the pop up message
-   */
-  alerta: boolean = false;
-  /**
    * inputNombre - String - Var that contains the value of the username
    */
   inputNombre: String = "";
@@ -81,22 +73,18 @@ export class LoginComponent implements OnInit{
           }
           
         } catch (error: any) {
-          if (error && error.error && error.error.mensaje) {
-            this.mostrarMensaje(error.error.mensaje);
+          if (error && error.error && error.error.error) {
+            this.mostrarMensaje(error.error.error, false);
           } else {
-            if (error.status === 500) {
-            this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.')
-          } else {
-            this.mostrarMensaje('Error desconocido.');
+            this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.', false)
           }
         }
-        }
       }else{
-        this.mostrarMensaje("La contraseña tiene que tener mínimo 6 carácteres.");
+        this.mostrarMensaje("La contraseña tiene que tener mínimo 6 carácteres.", false);
       }
     }
     else{
-      this.mostrarMensaje("El nombre tiene que tener mínimo 5 carácteres.");
+      this.mostrarMensaje("El nombre tiene que tener mínimo 5 carácteres.", false);
     }
   }
 
@@ -105,11 +93,12 @@ export class LoginComponent implements OnInit{
    * 
    * @param texto - string - message to show on the pop up
    */
-  mostrarMensaje(texto: string){
-    this.mensaje = texto;
-    this.alerta = true;
+  mostrarMensaje(texto: string, correcto: boolean){
+    this.service.correct.next(correcto);
+    this.service.message.next(texto);
+    this.service.alert.next(true);
     setTimeout(() =>{
-      this.alerta = false;
-    },2500);
+      this.service.alert.next(false);
+    },3000);
   }
 }
