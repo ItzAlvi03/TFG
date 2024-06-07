@@ -7,6 +7,14 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ApiService {
   /**
+   * spinner - boolean - To show or not the spinner
+   */
+  public spinner = new BehaviorSubject<boolean>(false);
+  /**
+   * spinner - string - Message on the spinner
+   */
+  public spinnerMessage = new BehaviorSubject<string>("");
+  /**
    * correct - boolean - Determinate if the pop up is an error or succesfull message
    */
   public correct = new BehaviorSubject<boolean>(false);
@@ -39,6 +47,7 @@ export class ApiService {
   userLogin(user: any): Observable<any>{
     return this.http.post(this.API_URL + '/userLogin', user);
   }
+  
   /**
    * @param client
    * @returns success or error
@@ -46,6 +55,7 @@ export class ApiService {
   insertClient(client: any): Observable<any>{
     return this.http.post(this.API_URL + '/insertClient', client);
   }
+
   /**
    * @param name
    * @returns clients or empty
@@ -53,6 +63,25 @@ export class ApiService {
   searchAllClients(name: any): Observable<any>{
     return this.http.post(this.API_URL + '/searchAllClients', name);
   }
+  
+  /**
+   * 
+   * @param product 
+   * @returns all procucts on DB
+   */
+  getAllProducts(product: any): Observable<any> {
+    return this.http.post(this.API_URL + '/getAllProducts', product);
+  }
+
+  /**
+   * 
+   * @param order 
+   * @returns succesfully or error
+   */
+  insertOrder(order: any): Observable<any> {
+    return this.http.post(this.API_URL + '/insertOrder', order);
+  }
+
   /**
    * @returns username and rol of the user or a message of the error
    */

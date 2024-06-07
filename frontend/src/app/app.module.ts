@@ -13,7 +13,7 @@ import { ApiService } from './Services/api.service';
 import { TokenInterceptor } from './Interceptor/token.interceptor';
 import { AlertComponent } from './Components/alert/alert.component';
 import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/insertar-pedido/insertar-pedido.component';
-
+import { SpinnerComponent } from './Components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,8 @@ import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/ins
     PaginaInicioComponent,
     DarAltaComponent,
     AlertComponent,
-    InsertarPedidoComponent
+    InsertarPedidoComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

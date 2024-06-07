@@ -1,0 +1,15 @@
+#content{
+    position: fixed;
+    min-height: 100vh;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: rgb(185, 185, 185);
+    z-index: 10;
+}

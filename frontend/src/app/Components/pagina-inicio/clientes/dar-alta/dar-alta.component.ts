@@ -51,6 +51,8 @@ export class DarAltaComponent {
    */
   async insertClient() {
     if(this.comprobarDatos()){
+      this.service.spinnerMessage.next("Insertando nuevo cliente...");
+      this.service.spinner.next(true);
       const client = {
         name: this.name,
         email: this.email,
@@ -73,6 +75,7 @@ export class DarAltaComponent {
             this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.', false)
         }
       }
+      this.service.spinner.next(false);
     }
   }
 

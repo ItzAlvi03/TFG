@@ -5,13 +5,19 @@
             <h5>Clientes</h5>
             <ul>
                 <li id="opcion1" (click)="cambiarOpcion(1)">Dar de alta un cliente</li>
-                <li id="opcion2" (click)="cambiarOpcion(2)">Insertar pedido</li>
-                <li id="opcion3" (click)="cambiarOpcion(3)">Lista de pedidos</li>
+                <li id="opcion2" (click)="cambiarOpcion(2)">Descuentos de clientes</li>
+            </ul>
+            <h5>Productos</h5>
+            <ul>
+                <li id="opcion3" (click)="cambiarOpcion(3)">Lista de productos</li>
+            </ul>
+            <h5>Pedidos</h5>
+            <ul>
+                <li id="opcion4" (click)="cambiarOpcion(4)">Insertar pedido</li>
             </ul>
             <h5>Facturas</h5>
             <ul>
-                <li id="opcion4" (click)="cambiarOpcion(4)">Generar factura</li>
-                <li id="opcion5" (click)="cambiarOpcion(6)">Lista de facturas</li>
+                <li id="opcion5" (click)="cambiarOpcion(5)">Lista de facturas</li>
             </ul>
         </div>
     </section>
@@ -41,7 +47,7 @@
         <div id="inicio">
             <h1 *ngIf="!dentroSeccion">¡Bienvenido de nuevo <strong>{{username}}</strong>!</h1>
             <app-dar-alta class="w-100 h-100" *ngIf="opcion == 1"></app-dar-alta>
-            <app-insertar-pedido class="w-100 h-100" *ngIf="opcion == 2"></app-insertar-pedido>
+            <app-insertar-pedido class="w-100 h-100" *ngIf="opcion == 4"></app-insertar-pedido>
         </div>
     </section>
 </div>
