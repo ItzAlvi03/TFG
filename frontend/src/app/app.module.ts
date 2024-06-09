@@ -14,6 +14,8 @@ import { TokenInterceptor } from './Interceptor/token.interceptor';
 import { AlertComponent } from './Components/alert/alert.component';
 import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/insertar-pedido/insertar-pedido.component';
 import { SpinnerComponent } from './Components/spinner/spinner.component';
+import { RegisterComponent } from './Components/register/register.component';
+import { ListaFacturasComponent } from './Components/pagina-inicio/lista-facturas/lista-facturas.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { SpinnerComponent } from './Components/spinner/spinner.component';
     DarAltaComponent,
     AlertComponent,
     InsertarPedidoComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    RegisterComponent,
+    ListaFacturasComponent
   ],
   imports: [
     BrowserModule,

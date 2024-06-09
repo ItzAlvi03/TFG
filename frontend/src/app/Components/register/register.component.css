@@ -108,11 +108,20 @@ input::placeholder {
     justify-content: space-between;
 }
 
-#register{
+#login{
     background-color: rgb(140, 140, 140);
     border: var(--border-white);
     border-radius: 10px;
     font-weight: 700;
+}
+
+#userType{
+    width: auto;
+}
+
+select, option{
+    cursor: pointer;
+    color: black;
 }
 
 @media (max-width: 1175px){

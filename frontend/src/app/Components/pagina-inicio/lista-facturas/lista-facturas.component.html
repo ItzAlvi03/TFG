@@ -1,0 +1,43 @@
+<div id="body">
+    <h3><span>Lista de facturas</span></h3>
+    <div class="pb-4" *ngIf="!clientSelected">
+        <div id="buscador" class="d-flex justify-content-between">
+            <div class="d-flex">
+                <input id="input1" (input)="cambiaValor(1)" [(ngModel)]="name" type="text" placeholder="Nombre cliente">
+                <select id="clientType" [(ngModel)]="clientType" name="clientType" class="form-control" required>
+                    <option *ngFor="let type of clientTypes" [value]="type">↓ {{ type }}</option>
+                </select>
+            </div>
+            <button (click)="buscarClientes()" class="bi bi-search"></button>
+        </div>
+        <div *ngIf="resultados" id="resultados">
+            <div *ngFor="let client of clients" id="resultado">
+                <button (click)="selectClient(client)">Elegir</button>
+                <label>Nombre: <strong>{{ client.name }}</strong></label>
+                <label>Email: <strong>{{ client.email }}</strong></label>
+                <label>Tipo: <strong>{{ client.type }}</strong></label>
+            </div>
+        </div>
+    </div>
+    <div id="clientSelected" *ngIf="clientSelected">
+        <button (click)="this.clientSelected = false;">Cliente: <strong>{{ client.name }}</strong><i class="bi bi-x"></i></button>
+    </div>
+    <div *ngIf="clientSelected" id="select" class="d-flex">
+        <label class="m-2">Estado factura: </label>
+        <select id="invoiceType" [(ngModel)]="orderType" name="invoiceType" required>
+            <option *ngFor="let type of orderTypes" [value]="type">{{ type }}</option>
+        </select>
+        <button class="bi bi-search" (click)="searchInvoices()">Buscar</button>
+    </div>
+    <div *ngIf="clientSelected" id="resultados">
+        <div *ngFor="let invoice of invoices; let i = index" id="resultado2">
+            <button class="bi bi-file-earmark-arrow-down-fill"></button>
+            <label><strong>Fecha:{{ invoice.date }}, total: {{ invoice.total }}€</strong>
+                <select id="invoiceType" [(ngModel)]="invoice.type" name="invoiceType" required>
+                <option *ngFor="let type of orderTypes" [value]="type">{{ type }}</option>
+                </select>
+            </label>
+            <button (click)="changeInvoiceType(invoice, i)" *ngIf="invoice.type !== invoiceType">Guardar cambio</button>
+        </div>
+    </div>
+</div>

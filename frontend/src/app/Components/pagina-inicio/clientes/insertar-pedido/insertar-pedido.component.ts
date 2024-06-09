@@ -265,7 +265,7 @@ export class InsertarPedidoComponent {
           this.productPackaging = "";
           this.finalProducts = [];
           this.products = [];
-          this.mostrarMensaje("Pedido insertado correctamente.", true);
+          this.mostrarMensaje(response.mensaje, true);
         }
       } catch (error: any) {
         if (error && error.error && error.error.error) {

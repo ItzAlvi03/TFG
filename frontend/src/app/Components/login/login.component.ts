@@ -52,38 +52,45 @@ export class LoginComponent implements OnInit{
    */
   async iniciarSesion() {
     if(this.inputNombre.length >= 5){
-      if(this.inputContrasenia.length >= 6){
-        const user = {
-          username: this.inputNombre as string,
-          password: this.inputContrasenia as string
-        }
-        try {
-          const response = await this.service.userLogin(user).toPromise();
-          if(response.token){
-            // Accion del remember me para recordar credenciales correctas
-            if (this.rememberMe) {
-              localStorage.setItem('username', user.username);
-              localStorage.setItem('password', user.password);
-            } else {
-              localStorage.removeItem('username');
-              localStorage.removeItem('password');
+      if(this.inputNombre.length <= 30){
+        if(this.inputContrasenia.length <= 16){
+          if(this.inputContrasenia.length >= 6){
+            const user = {
+              username: this.inputNombre as string,
+              password: this.inputContrasenia as string
             }
-            localStorage.setItem("token", response.token);
-            this.router.navigate(['/home']);
+            try {
+              const response = await this.service.userLogin(user).toPromise();
+              if(response.token){
+                // Accion del remember me para recordar credenciales correctas
+                if (this.rememberMe) {
+                  localStorage.setItem('username', user.username);
+                  localStorage.setItem('password', user.password);
+                } else {
+                  localStorage.removeItem('username');
+                  localStorage.removeItem('password');
+                }
+                localStorage.setItem("token", response.token);
+                this.router.navigate(['/home']);
+              }
+
+            } catch (error: any) {
+              if (error && error.error && error.error.error) {
+                this.mostrarMensaje(error.error.error, false);
+              } else {
+                this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.', false)
+              }
+            }
+          }else{
+            this.mostrarMensaje("La contraseña tiene que tener mínimo 6 carácteres.", false);
           }
-          
-        } catch (error: any) {
-          if (error && error.error && error.error.error) {
-            this.mostrarMensaje(error.error.error, false);
-          } else {
-            this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.', false)
-          }
+        } else{
+          this.mostrarMensaje("La contraseña no puede tener más de 16 carácteres.", false);
         }
-      }else{
-        this.mostrarMensaje("La contraseña tiene que tener mínimo 6 carácteres.", false);
+      } else{
+        this.mostrarMensaje("El nombre no puede tener más de 30 carácteres.", false);
       }
-    }
-    else{
+    } else{
       this.mostrarMensaje("El nombre tiene que tener mínimo 5 carácteres.", false);
     }
   }

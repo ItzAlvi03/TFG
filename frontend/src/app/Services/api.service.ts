@@ -47,6 +47,14 @@ export class ApiService {
   userLogin(user: any): Observable<any>{
     return this.http.post(this.API_URL + '/userLogin', user);
   }
+
+  /**
+   * @param user 
+   * @returns success or a message with the error
+   */
+  createAccount(user: any): Observable<any>{
+    return this.http.post(this.API_URL + '/createAccount', user);
+  }
   
   /**
    * @param client
@@ -80,6 +88,22 @@ export class ApiService {
    */
   insertOrder(order: any): Observable<any> {
     return this.http.post(this.API_URL + '/insertOrder', order);
+  }
+
+  /**
+   * @param client
+   * @returns invoices or none
+   */
+  searchClientInvoices(client: any): Observable<any> {
+    return this.http.post(this.API_URL + "/searchClientInvoices", client);
+  }
+
+  /**
+   * @param invoice
+   * @returns successfully or none
+   */
+  changeInvoiceType(invoice: any): Observable<any> {
+    return this.http.post(this.API_URL + "/changeInvoiceType", invoice);
   }
 
   /**

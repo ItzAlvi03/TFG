@@ -48,6 +48,7 @@
             <h1 *ngIf="!dentroSeccion">¡Bienvenido de nuevo <strong>{{username}}</strong>!</h1>
             <app-dar-alta class="w-100 h-100" *ngIf="opcion == 1"></app-dar-alta>
             <app-insertar-pedido class="w-100 h-100" *ngIf="opcion == 4"></app-insertar-pedido>
+            <app-lista-facturas class="w-100 h-100" *ngIf="opcion == 5"></app-lista-facturas>
         </div>
     </section>
 </div>
