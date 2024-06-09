@@ -89,6 +89,26 @@ def user_login():
     except Exception as e:
         return jsonify({'error': f'Error al buscar usuario: {e}'}), 500
     
+    #   SUMMARY: Endpoint to see if exists users in users.db
+#   RETURN: response 200(with the user) or response 500 (empty with no user)
+#   POST /userLogin
+#   VALUES: data(user info)
+@app.route('/createAccount', methods=['POST'])
+def create_account():
+    try:
+        data = request.json
+        username = data['username']
+        password = data['password']
+        rol = data['type']
+        result = users.create_account(dbUsers, username, password, rol)
+        if result is not None:
+            return jsonify({"mensaje": "Cuenta creada con exito."})
+        else:
+            return jsonify({'error': 'Ya existe un usuario con ese nombre.'}), 400
+        
+    except Exception:
+        return jsonify({'error': 'Error al crear el usuario.'}), 400
+    
 #   SUMMARY: Endpoint to see if exists users in users.db
 #   RETURN: response 200(with the user) or response 500 (empty with no user)
 #   POST /userLogin
@@ -158,7 +178,7 @@ def search_all_clients(payload):
     
 #   SUMMARY: Endpoint to see if exists products in clients.db
 #   RETURN: response 200(with the products) or response 500 (empty with no products)
-#   POST /getAllProductsName
+#   POST /getAllProducts
 #   VALUES: product(products info)
 @app.route('/getAllProducts', methods=['POST'])
 @token_required
@@ -202,9 +222,12 @@ def insert_order(payload):
  
         now = datetime.now()
         format_time = now.strftime('%d-%m-%Y')
-        order_id = clients.insert_order(dbClients, client, format_time)
+        order_id = clients.insert_order(dbClients, client, format_time, products)
 
-        if order_id is None:
+        if order_id == "Actualizado":
+            return jsonify({'mensaje': "Pedido actualizado con exito."})
+
+        elif order_id is None:
             return jsonify({'error': 'Ocurrió un error al intentar insertar un pedido.'}), 400
 
         result = clients.insert_order_details(dbClients, order_id, products)
@@ -221,6 +244,44 @@ def insert_order(payload):
         
     except Exception as e:
         return jsonify({'error': f'Error al insertar el pedido: {e}'}), 500
+           
+#   SUMMARY: Endpoint to insert orders to the clients in clients.db
+#   RETURN: response 200 or response 400/500 (error)
+#   POST /searchClientInvoices
+#   VALUES: products(order info)
+@app.route('/searchClientInvoices', methods=['POST'])
+@token_required
+def get_all_client_invoices(payload):
+    try:
+        data = request.json
+        client_name = data['client_name']
+        client_email = data['client_email']
+        client_type = data['client_type']
+        order_type = data['order_type']
+
+        return clients.get_invoices(dbClients, client_name, client_email, client_type, order_type)
+    except Exception:
+        return jsonify({'error': 'Error al buscar las facturas del cliente.'}), 500
+               
+#   SUMMARY: Endpoint to change the invoices's types in clients.db
+#   RETURN: response 200 or response 400/500 (error)
+#   POST /changeInvoiceType
+#   VALUES: products(order info)
+@app.route('/changeInvoiceType', methods=['POST'])
+@token_required
+def change_invoice_type(payload):
+    try:
+        data = request.json
+        date = data['date']
+        invoice_type = data['type']
+        new_invoice_type = data['new_type']
+        client_name = data['client_name']
+        client_email = data['client_email']
+        client_type = data['client_type']
+
+        return clients.change_invoices_types(dbClients, date, invoice_type, new_invoice_type, client_name, client_email, client_type)
+    except Exception:
+        return jsonify({'error': 'Error al actualizar la factura.'}), 500
     
 #   SUMMARY: Endpoint to check a token
 #   RETURN: response 200(with info about user) or response 400 (token invalid)
