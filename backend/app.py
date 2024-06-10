@@ -282,6 +282,60 @@ def change_invoice_type(payload):
         return clients.change_invoices_types(dbClients, date, invoice_type, new_invoice_type, client_name, client_email, client_type)
     except Exception:
         return jsonify({'error': 'Error al actualizar la factura.'}), 500
+       
+#   SUMMARY: Endpoint to get the discounts products associated to a client
+#   RETURN: response 200 with products or response 400/500 (empty/error)
+#   POST /getDiscountProducts
+#   VALUES: client info
+@app.route('/getDiscountProducts', methods=['POST'])
+@token_required
+def get_discount_products(payload):
+    try:
+        data = request.json
+        client_name = data['name']
+        client_email = data['email']
+        client_type = data['type']
+
+        return clients.get_discount_products(dbClients, client_name, client_email, client_type)
+    except Exception:
+        return jsonify({'error': 'Error al buscar productos rebajados.'}), 500
+       
+#   SUMMARY: Endpoint to add new discounts to clients in different products
+#   RETURN: response 200 or response 400/500
+#   POST /add_product_discount
+#   VALUES: data info
+@app.route('/addProductDiscount', methods=['POST'])
+@token_required
+def add_product_discount(payload):
+    try:
+        data = request.json
+        client_name = data['name']
+        client_email = data['email']
+        client_type = data['type']
+        product = data['product']
+        discount = data['discount']
+
+        return clients.add_product_discount(dbClients, client_name, client_email, client_type, product, discount)
+    except Exception:
+        return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
+       
+#   SUMMARY: Endpoint to delete discounts to clients in different products
+#   RETURN: response 200 or response 400/500
+#   POST /delete_products
+#   VALUES: data info
+@app.route('/deleteDiscount', methods=['POST'])
+@token_required
+def delete_discount(payload):
+    try:
+        data = request.json
+        client_name = data['name']
+        client_email = data['email']
+        client_type = data['type']
+        product = data['product']
+
+        return clients.delete_discount(dbClients, client_name, client_email, client_type, product)
+    except Exception:
+        return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
     
 #   SUMMARY: Endpoint to check a token
 #   RETURN: response 200(with info about user) or response 400 (token invalid)

@@ -61,6 +61,7 @@ def client_exists(dbClients, client):
         return cursor.fetchone()[0] > 0
     except sqlite3.Error:
         return False
+    
 # Insert a new order to the client     
 def insert_order(dbClients, client, format_time, products):
     try:
@@ -85,6 +86,7 @@ def insert_order(dbClients, client, format_time, products):
     except sqlite3.Error:
         return None
     
+# Insert all the products that are associated to the order    
 def insert_order_details(dbClients, order_id, products):
     try:
         connection = sqlite3.connect(dbClients)
@@ -102,6 +104,7 @@ def insert_order_details(dbClients, order_id, products):
     except sqlite3.Error:
         return None
     
+# Create the invoice of the order    
 def insert_bill(dbClients, order_id, total_price, format_time):
     try:
         connection = sqlite3.connect(dbClients)
@@ -114,6 +117,7 @@ def insert_bill(dbClients, order_id, total_price, format_time):
     except sqlite3.Error:
         return None
     
+# Update an order that exists with type "Pendiente" instead of create a new one    
 def update_order(dbClients, order_id, products):
     try:
         connection = sqlite3.connect(dbClients)
@@ -163,6 +167,7 @@ def update_order(dbClients, order_id, products):
     except sqlite3.Error:
         return None
 
+# Return all the invoices with a specific type("Pendiente" or "Pagado")
 def get_invoices(dbClients, client_name, client_email, client_type, order_type):
     try:
         client_id = get_clientid(dbClients, client_name, client_email, client_type)
@@ -204,7 +209,8 @@ def get_invoices(dbClients, client_name, client_email, client_type, order_type):
     
     except sqlite3.Error:
         return jsonify({"error": "Error al conectar con la base de datos."}), 400
-    
+
+# Change the invoices types(from "Pendiente" to "Pagado" and reverse)
 def change_invoices_types(dbClients, date, invoice_type, new_invoice_type, client_name, client_email, client_type):
     try:
         client_id = get_clientid(dbClients, client_name, client_email, client_type)
@@ -229,3 +235,112 @@ def change_invoices_types(dbClients, date, invoice_type, new_invoice_type, clien
     
     except sqlite3.Error:
         return jsonify({"error": "Error al actualizar la factura."}), 400
+    
+# Return all the products that has a discount associated to a client    
+def get_discount_products(dbClients, client_name, client_email, client_type):
+    client_id = get_clientid(dbClients, client_name, client_email, client_type)
+
+    if client_id is None:
+            return jsonify({"error": "No se ha podido encontrar al cliente."}), 400
+    
+    connection = sqlite3.connect(dbClients)
+    cursor = connection.cursor()
+    cursor.execute("""
+        SELECT p.Nombre, p.Embalaje, r.Descuento
+        FROM Productos p INNER JOIN Rebajas r
+        ON p.ProductoID = r.ProductoID
+        WHERE p.ProductoID IN(
+            SELECT ProductoID
+            FROM Rebajas
+            WHERE ClienteID = ?
+        )
+    """, (client_id,))
+    products = cursor.fetchall()
+
+    if products is None:
+        return jsonify({"error": "El cliente no tiene productos con rebajas."}), 400
+
+    final_result = []
+    for product in products:
+        product_dict = {
+            "name": product[0],
+            "packaging": product[1],
+            "discount": product[2]
+        }
+        final_result.append(product_dict)
+
+    return jsonify({"products": final_result})
+
+# Add or updates discounts of a product
+def add_product_discount(dbClients, client_name, client_email, client_type, product, discount):
+    try:
+        client_id = get_clientid(dbClients, client_name, client_email, client_type)
+
+        if client_id is None:
+                return jsonify({"error": "No se ha podido encontrar al cliente."}), 400
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        
+        # Get the ProductoID from the product
+        cursor.execute("""
+            SELECT ProductoID
+            FROM Productos
+            WHERE Nombre = ? AND Embalaje = ? AND Consumidor = ?
+        """, (product['name'], product['packaging'], client_type))
+        product_id = cursor.fetchone()[0]
+
+        # Find if there is a discount aplicated to the same client and product
+        cursor.execute("""
+            SELECT RebajaID
+            FROM Rebajas
+            WHERE ClienteID = ? AND ProductoID = ?
+        """, (client_id, product_id))
+        discount_id = cursor.fetchone()
+
+        # If there is no discounts create a new one
+        if discount_id is None:
+            cursor.execute("""
+            INSERT INTO Rebajas (ClienteID, ProductoID, Descuento) VALUES(?,?,?)
+        """, (client_id, product_id, discount))
+        else:
+            # Update the discount with the new value for the discount
+            cursor.execute("""
+            UPDATE Rebajas SET Descuento = ? WHERE RebajaID = ?
+        """, (discount, discount_id[0]))
+
+        connection.commit()
+        return jsonify({"mensaje": "Descuento agregado con exito."})
+    except sqlite3.Error:
+        return jsonify({"error": "Error al tratar de agregar un nuevo descuento."}), 500
+    
+# Delete the discount of a product for one client
+def delete_discount(dbClients, client_name, client_email, client_type, product):
+    try:
+        client_id = get_clientid(dbClients, client_name, client_email, client_type)
+
+        if client_id is None:
+                return jsonify({"error": "No se ha podido encontrar al cliente."}), 400
+        
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        
+        # Get the ProductoID from the product
+        cursor.execute("""
+            SELECT ProductoID
+            FROM Productos
+            WHERE Nombre = ? AND Embalaje = ? AND Consumidor = ?
+        """, (product['name'], product['packaging'], client_type))
+        product_id = cursor.fetchone()[0]
+
+        # Delete the discount from the client of the specific product
+        cursor.execute("""
+            DELETE FROM Rebajas WHERE ClienteID = ? AND ProductoID = ?
+        """, (client_id, product_id))
+
+        if cursor.rowcount == 0:
+            return jsonify({"error": "No se ha encontrado el descuento para borrarlo."}), 400
+
+        connection.commit()
+        return jsonify({"mensaje": "El descuento se ha borrado correctamente."})
+    except sqlite3.Error:
+        return jsonify({"error": "Error al tratar de borrar un descuento."}), 500    
