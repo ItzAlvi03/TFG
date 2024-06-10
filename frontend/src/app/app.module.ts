@@ -16,6 +16,8 @@ import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/ins
 import { SpinnerComponent } from './Components/spinner/spinner.component';
 import { RegisterComponent } from './Components/register/register.component';
 import { ListaFacturasComponent } from './Components/pagina-inicio/lista-facturas/lista-facturas.component';
+import { DiscountsComponent } from './Components/pagina-inicio/clientes/discounts/discounts.component';
+import { InteractivePopUpComponent } from './Components/interactive-pop-up/interactive-pop-up.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { ListaFacturasComponent } from './Components/pagina-inicio/lista-factura
     InsertarPedidoComponent,
     SpinnerComponent,
     RegisterComponent,
-    ListaFacturasComponent
+    ListaFacturasComponent,
+    DiscountsComponent,
+    InteractivePopUpComponent,
   ],
   imports: [
     BrowserModule,

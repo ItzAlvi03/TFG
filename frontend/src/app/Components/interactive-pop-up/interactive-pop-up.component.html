@@ -1,0 +1,12 @@
+<div id="content">
+    <div id="card" class="d-flex flex-column justify-content-around align-items-center">
+        <div class="d-flex flex-column">
+            <h3>{{ mensaje }}</h3>
+            <input *ngIf="interactiveType == 1" [(ngModel)]="number" min="0" type="number" name="number" id="number">
+        </div>
+        <div id="buttons">
+            <button class="blue" (click)="sendConfirmationBack(true)">Confirmar</button>
+            <button class="red" (click)="sendConfirmationBack(false)">Cancelar</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<app-interactive-pop-up class="w-100 h-100" *ngIf="showPopUp == 1" [interactiveType]="1" [mensaje]="mensaje" (output)="discountNumber = $event" (confirm)="discountAction($event, 1)"></app-interactive-pop-up>
+<app-interactive-pop-up class="w-100 h-100" *ngIf="showPopUp == 2" [interactiveType]="2" [mensaje]="mensaje" (confirm)="discountAction($event, 2)"></app-interactive-pop-up>
+<div id="body">
+    <h3><span>Descuentos clientes</span></h3>
+    <div class="pb-4" *ngIf="!clientSelected">
+        <div id="buscador" class="d-flex justify-content-between">
+            <div class="d-flex">
+                <input id="input1" (input)="cambiaValor(1)" [(ngModel)]="name" type="text" placeholder="Nombre cliente">
+                <select id="clientType" [(ngModel)]="clientType" name="clientType" class="form-control" required>
+                    <option *ngFor="let type of clientTypes" [value]="type">↓ {{ type }}</option>
+                </select>
+            </div>
+            <button (click)="buscarClientes()" class="bi bi-search"></button>
+        </div>
+        <div *ngIf="resultados" id="resultados">
+            <div *ngFor="let client of clients" id="resultado">
+                <button (click)="selectClient(client)">Elegir</button>
+                <label>Nombre: <strong>{{ client.name }}</strong></label>
+                <label>Email: <strong>{{ client.email }}</strong></label>
+                <label>Tipo: <strong>{{ client.type }}</strong></label>
+            </div>
+        </div>
+    </div>
+    <div id="clientSelected" *ngIf="clientSelected">
+        <button (click)="this.clientSelected = false;">Cliente: <strong>{{ client.name }}</strong><i class="bi bi-x"></i></button>
+    </div>
+    <div *ngIf="clientSelected" id="select" class="d-flex">
+        <label class="m-2">Opciones: </label>
+        <select id="discountOption" [(ngModel)]="discountOption" name="discountOption" required>
+            <option *ngFor="let type of discountOptions" [value]="type">{{ type }}</option>
+        </select>
+        <button (click)="changeOption()">Cambiar opcion</button>
+    </div>
+    <div *ngIf="clientSelected" id="resultados">
+        <div *ngFor="let product of products" id="resultado">
+            <button (click)="showPopUp = 1; finalProduct = product; mensaje = 'Introduzca el porcentaje de descuento del producto:';" *ngIf="mostrar == 1">Añadir descuento</button>
+            <button (click)="showPopUp = 2; finalProduct = product; mensaje = '¿Está seguro de que desea borrar el descuento de este producto?'" class="delete" *ngIf="mostrar == 2">Borrar descuento</button>
+            <label><strong>{{ product.name }}, {{ product.packaging }}</strong><strong *ngIf="mostrar == 2">, Descuento: {{product.discount}}%</strong></label>
+        </div>
+    </div>
+</div>

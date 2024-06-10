@@ -1,0 +1,97 @@
+#content{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-height: 100vh;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: rgb(185, 185, 185);
+    z-index: 10;
+}
+
+h3{
+    color: black;
+    text-align: center;
+}
+
+#card{
+    width: auto;
+    max-width: 33%;
+    background-color:white;
+    border-radius: 5px;
+    padding: 2.5%;
+}
+
+input{
+    margin-top: 1%;
+}
+
+#buttons{
+    width: 100%;
+    max-width: 100%;
+    margin-top: 3vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#buttons button{
+    padding: 5%;
+    border: 0px solid white;
+    border-radius: 5px;
+    font-weight: 700;
+    color: white;
+}
+
+.red{
+    background-color: red;
+}
+
+.blue{
+    background-color: #358cf7;
+}
+
+@media (max-width: 1400px) {
+    #card{
+        max-width: 40%;
+    }
+}
+
+@media (max-width: 1100px) {
+    #card{
+        max-width: 48%;
+    }
+}
+
+@media (max-width: 850px) {
+    #card{
+        max-width: 55%;
+    }
+}
+
+@media (max-width: 690px) {
+    #card{
+        max-width: 70%;
+        padding: 5%;
+    }
+    #buttons{
+        flex-direction: column;
+        gap: 2vh;
+    }
+    #buttons button{
+        padding: 2%;
+    }
+}
+
+@media (max-width: 500px) {
+    #card{
+        max-width: 80%;
+    }
+}

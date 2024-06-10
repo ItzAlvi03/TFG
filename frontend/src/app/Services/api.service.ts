@@ -105,6 +105,30 @@ export class ApiService {
   changeInvoiceType(invoice: any): Observable<any> {
     return this.http.post(this.API_URL + "/changeInvoiceType", invoice);
   }
+  
+  /**
+   * @param client
+   * @returns products or none
+   */
+  getDiscountProducts(client: any): Observable<any> {
+    return this.http.post(this.API_URL + "/getDiscountProducts", client);
+  }
+  
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  addProductDiscount(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/addProductDiscount", data);
+  }
+  
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  deleteDiscount(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/deleteDiscount", data);
+  }
 
   /**
    * @returns username and rol of the user or a message of the error
