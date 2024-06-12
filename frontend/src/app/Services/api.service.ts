@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -128,6 +128,18 @@ export class ApiService {
    */
   deleteDiscount(data: any): Observable<any> {
     return this.http.post(this.API_URL + "/deleteDiscount", data);
+  }
+
+  /**
+   * @param invoice
+   * @returns invoice file or none
+   */
+  downloadInvoice(invoice: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${invoice.token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(this.API_URL + "/downloadInvoice", invoice, { headers: headers, responseType: 'blob' });
   }
 
   /**

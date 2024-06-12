@@ -31,7 +31,7 @@
     </div>
     <div *ngIf="clientSelected" id="resultados">
         <div *ngFor="let invoice of invoices; let i = index" id="resultado2">
-            <button class="bi bi-file-earmark-arrow-down-fill"></button>
+            <button (click)="downloadInvoice(invoice)" class="bi bi-file-earmark-arrow-down-fill"></button>
             <label><strong>Fecha:{{ invoice.date }}, total: {{ invoice.total }}€</strong>
                 <select id="invoiceType" [(ngModel)]="invoice.type" name="invoiceType" required>
                 <option *ngFor="let type of orderTypes" [value]="type">{{ type }}</option>

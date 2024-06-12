@@ -159,6 +159,37 @@ async changeInvoiceType(invoice: Invoices, index: number){
   this.service.spinner.next(false);
 }
 
+async downloadInvoice(invoice: Invoices){
+  const data = {
+    id: invoice.id,
+    token: localStorage.getItem('token') || ""
+  }
+  this.service.spinnerMessage.next("Descargando factura...");
+  this.service.spinner.next(true);
+
+  try{
+    const file = await this.service.downloadInvoice(data).toPromise();
+    console.log(file)
+    if(file){
+      var url = window.URL.createObjectURL(file);
+      var a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      a.download = `Factura_${invoice.date}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  } catch(error: any){
+    if (error && error.error && error.error.error) {
+      this.mostrarMensaje(error.error.error, false);
+    } else {
+      this.mostrarMensaje('Ha ocurrido un error en el servidor, inténtelo de nuevo.', false);
+    }
+  }
+  this.service.spinner.next(false);
+}
+
 cambiaValor(id: number) {
   let inputValue = "";
   let maxLength = 0;
