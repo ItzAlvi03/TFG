@@ -1,5 +1,6 @@
 from flask import jsonify
 import sqlite3
+import services.excel as excel
 
 # Search the ClienteID of the client data
 def get_clientid(dbClients, client_name, client_email, client_type):
@@ -76,15 +77,15 @@ def insert_order(dbClients, client, format_time, products):
         order_id = cursor.fetchone()
         # If an order exists then dont create a new one just update it
         if order_id is not None:
-            return update_order(dbClients, order_id[0], products)
+            return update_order(dbClients, order_id[0], products, client_id)
         else:
             # Insert the order
             insert_sql = "INSERT INTO Pedidos (ClienteID, Estado, Fecha) VALUES(?,?,?)"
             cursor.execute(insert_sql, (client_id, "Pendiente", format_time))
             connection.commit()
-            return cursor.lastrowid
+            return cursor.lastrowid, client_id
     except sqlite3.Error:
-        return None
+        return None, None
     
 # Insert all the products that are associated to the order    
 def insert_order_details(dbClients, order_id, products):
@@ -105,27 +106,101 @@ def insert_order_details(dbClients, order_id, products):
         return None
     
 # Create the invoice of the order    
-def insert_bill(dbClients, order_id, total_price, format_time):
+def insert_bill(dbClients, order_id, client_id, format_time, products):
     try:
         connection = sqlite3.connect(dbClients)
         cursor = connection.cursor()
+        final_products = []
+        for product in products:
+            # Get the price and discounts about the product
+            cursor.execute("""
+                SELECT p.Precio, COALESCE(r.Descuento, 0) AS Descuento
+                FROM Productos p LEFT JOIN Rebajas r
+                ON p.ProductoID = r.ProductoID AND r.ClienteID = ?
+                WHERE p.Nombre = ? AND p.Embalaje = ? AND p.Consumidor = ?;
+                """, (client_id, product['name'], product['packaging'], product['type']))
+            data = cursor.fetchone()
+            price = data[0]
+            discount = data[1]
+
+            product_dict = {
+                "name": product['name'],
+                "packaging": product['packaging'],
+                "quantity": product['quantity'],
+                "price": price,
+                "discount": discount
+            }
+            final_products.append(product_dict)
+
+        cursor.execute("""
+                SELECT c.Nombre, c.Email, c.CIF, c.Direccion, c.Tipo
+                FROM Clientes c
+                WHERE c.ClienteID = ?
+                """, (client_id,))
+        data = cursor.fetchone()
+        client = {
+            "name": data[0],
+            "email": data[1],
+            "cif": data[2],
+            "address": data[3],
+            "type": data[4]
+        }
+        total = excel.create_invoice(client, format_time, final_products, order_id)
         # Insert the bill of the order
         insert_sql = "INSERT INTO Facturas (PedidoID, Total, Fecha) VALUES(?,?,?)"
-        cursor.execute(insert_sql, (order_id, total_price, format_time))
+        cursor.execute(insert_sql, (order_id, total, format_time))
         connection.commit()
         return cursor.lastrowid
     except sqlite3.Error:
         return None
     
 # Update an order that exists with type "Pendiente" instead of create a new one    
-def update_order(dbClients, order_id, products):
+def update_order(dbClients, order_id, new_products, client_id):
     try:
         connection = sqlite3.connect(dbClients)
         cursor = connection.cursor()
+        # Get the products that were insert on the order
+        cursor.execute("""
+            SELECT p.Nombre, p.Embalaje, p.Consumidor, d.Cantidad, p.Precio
+            FROM Productos p
+            LEFT JOIN DetallesPedidos d ON p.ProductoID = d.ProductoID
+            WHERE d.PedidoID = ?;
+        """, (order_id,))
+        existing_products = cursor.fetchall()
+        products = []
+        for product in existing_products:
+            product_dict = {
+                "name": product[0],
+                "packaging": product[1],
+                "type": product[2],
+                "quantity": product[3],
+                "price": product[4]
+            }
+            products.append(product_dict)
+
+        products.extend(new_products)
+
+        combined_products = {}
         for product in products:
-            productid_sql = "SELECT ProductoID FROM Productos WHERE Nombre LIKE '" + product['name'] + "' AND Embalaje LIKE '" + product['packaging'] + "' AND Consumidor LIKE '" + product['type'] + "'"
-            cursor.execute(productid_sql)
-            product_id = cursor.fetchone()[0]
+            key = (product['name'], product['packaging'])
+            if key in combined_products:
+                combined_products[key]['quantity'] += product['quantity']
+            else:
+                combined_products[key] = product
+
+        # Get the final products to update the invoice
+        final_products = []
+        for product in combined_products.values():
+            print(product)
+            cursor.execute("""
+                SELECT p.ProductoID, COALESCE(r.Descuento, 0) AS Descuento
+                FROM Productos p LEFT JOIN Rebajas r
+                ON p.ProductoID = r.ProductoID AND r.ClienteID = ?
+                WHERE p.Nombre = ? AND p.Embalaje = ? AND p.Consumidor = ?;
+                """, (client_id, product['name'], product['packaging'], product['type']))
+            data = cursor.fetchone()
+            product_id = data[0]
+            discount = data[1]
 
             # Search if the product is already on the order details
             cursor.execute("""
@@ -137,7 +212,7 @@ def update_order(dbClients, order_id, products):
             if cursor.fetchone() is not None:
                 cursor.execute("""
                 UPDATE DetallesPedidos
-                SET Cantidad = Cantidad + ?
+                SET Cantidad = ?
                 WHERE PedidoID = ? AND ProductoID = ?
                 """, (product['quantity'], order_id, product_id))
                 connection.commit()
@@ -153,17 +228,41 @@ def update_order(dbClients, order_id, products):
                 WHERE ProductoID = ?
                 """, (product_id,))
             price = cursor.fetchone()[0]
-            
-            # Update the invoice with the new total amount to pay
-            total = price * product['quantity']
-            cursor.execute("""
-                UPDATE Facturas
-                SET Total = Total + ?
-                WHERE PedidoID = ?
-                """, (total, order_id))
-            connection.commit()
 
-        return "Actualizado"
+            product_dict = {
+                "name": product['name'],
+                "packaging": product['packaging'],
+                "quantity": product['quantity'],
+                "price": price,
+                "discount": discount
+            }
+            final_products.append(product_dict)
+
+        # Update the invoice with the new total amount to pay
+        cursor.execute("""
+            SELECT c.Nombre, c.Email, c.CIF, c.Direccion, c.Tipo, f.Fecha
+            FROM Clientes c, Facturas f
+            WHERE c.ClienteID = ? AND f.PedidoID = ?
+            """, (client_id, order_id))
+        data = cursor.fetchone()
+        client = {
+            "name": data[0],
+            "email": data[1],
+            "cif": data[2],
+            "address": data[3],
+            "type": data[4]
+        }
+        date = data[5]
+        
+        total = excel.create_invoice(client, date, final_products, order_id)
+        cursor.execute("""
+            UPDATE Facturas
+            SET Total = ?
+            WHERE PedidoID = ?
+            """, (total, order_id))
+        connection.commit()
+
+        return "Actualizado", None
     except sqlite3.Error:
         return None
 
@@ -188,7 +287,7 @@ def get_invoices(dbClients, client_name, client_email, client_type, order_type):
         
         order_ids = [order[0] for order in orders]
         cursor.execute(f"""
-            SELECT ROUND(Total, 2), Fecha FROM Facturas 
+            SELECT ROUND(Total, 2), Fecha, FacturaID FROM Facturas 
             WHERE PedidoID IN ({','.join(['?']*len(order_ids))})
         """, order_ids)
         invoices = cursor.fetchall()
@@ -201,7 +300,8 @@ def get_invoices(dbClients, client_name, client_email, client_type, order_type):
             invoice_dict = {
                 "total": invoice[0],
                 "date": str(invoice[1]),
-                "type": order_type
+                "type": order_type,
+                "id": invoice[2]
             }
             final_result.append(invoice_dict)
         
@@ -344,3 +444,20 @@ def delete_discount(dbClients, client_name, client_email, client_type, product):
         return jsonify({"mensaje": "El descuento se ha borrado correctamente."})
     except sqlite3.Error:
         return jsonify({"error": "Error al tratar de borrar un descuento."}), 500    
+    
+# Get the order_id and date from the invoice
+def get_invoice_info(dbClients, invoice_id):
+    try:
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        
+        # Get the info from Facturas by FacturaID
+        cursor.execute("""
+            SELECT PedidoID, Fecha
+            FROM Facturas
+            WHERE FacturaID = ?
+        """, (invoice_id,))
+        
+        return cursor.fetchone()
+    except sqlite3.Error:
+        return None

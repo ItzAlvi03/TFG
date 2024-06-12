@@ -6,6 +6,7 @@ import jwt
 from services.db_services import users, clients
 from models.database import dbClients, dbUsers
 import services.generate_token as token_generator
+from services.excel import get_invoice
 from datetime import datetime
 from functools import wraps
 #endregion
@@ -222,7 +223,7 @@ def insert_order(payload):
  
         now = datetime.now()
         format_time = now.strftime('%d-%m-%Y')
-        order_id = clients.insert_order(dbClients, client, format_time, products)
+        order_id, client_id = clients.insert_order(dbClients, client, format_time, products)
 
         if order_id == "Actualizado":
             return jsonify({'mensaje': "Pedido actualizado con exito."})
@@ -235,7 +236,7 @@ def insert_order(payload):
         if result is None:
             return jsonify({'error': 'Ocurrió un error al intentar insertar los detalles del pedido.'}), 400
         
-        result = clients.insert_bill(dbClients, order_id, total_price, format_time)
+        result = clients.insert_bill(dbClients, order_id, client_id, format_time, products)
 
         if result is None:
             return jsonify({'error': 'Ocurrió un error al intentar insertar la factura del pedido.'}), 400
@@ -302,7 +303,7 @@ def get_discount_products(payload):
        
 #   SUMMARY: Endpoint to add new discounts to clients in different products
 #   RETURN: response 200 or response 400/500
-#   POST /add_product_discount
+#   POST /addProductDiscount
 #   VALUES: data info
 @app.route('/addProductDiscount', methods=['POST'])
 @token_required
@@ -321,7 +322,7 @@ def add_product_discount(payload):
        
 #   SUMMARY: Endpoint to delete discounts to clients in different products
 #   RETURN: response 200 or response 400/500
-#   POST /delete_products
+#   POST /deleteDiscount
 #   VALUES: data info
 @app.route('/deleteDiscount', methods=['POST'])
 @token_required
@@ -336,7 +337,27 @@ def delete_discount(payload):
         return clients.delete_discount(dbClients, client_name, client_email, client_type, product)
     except Exception:
         return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
-    
+        
+#   SUMMARY: Endpoint to send the invoice to download
+#   RETURN: response 200 or response 400/500
+#   POST /downloadInvoice
+#   VALUES: data info
+@app.route('/downloadInvoice', methods=['POST'])
+@token_required
+def download_invoice(payload):
+    try:
+        data = request.json
+        invoice_id = data['id']
+
+        info = clients.get_invoice_info(dbClients, invoice_id)
+
+        if info is None:
+            return jsonify({"error": "No se ha podido encontrar la información de la factura."}), 400
+        
+        return get_invoice(info[0], info[1])
+    except Exception:
+        return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
+   
 #   SUMMARY: Endpoint to check a token
 #   RETURN: response 200(with info about user) or response 400 (token invalid)
 #   POST /auth
