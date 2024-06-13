@@ -1,0 +1,25 @@
+<app-interactive-pop-up class="w-100 h-100" *ngIf="showPopUp" [interactiveType]="1" [mensaje]="mensaje" (output)="finalPrice = $event" (confirm)="changePrice($event)"></app-interactive-pop-up>
+<div id="body">
+    <h3><span>Lista de productos</span></h3>
+    <div class="pb-4">
+        <div id="buscador" class="d-flex justify-content-between">
+            <div class="d-flex">
+                <select id="clientType" [(ngModel)]="packagingType" name="clientType">
+                    <option *ngFor="let type of packagingTypes" [value]="type">{{ type }}</option>
+                </select>
+                <select id="clientType" [(ngModel)]="clientType" name="clientType">
+                    <option *ngFor="let type of clientTypes" [value]="type">{{ type }}</option>
+                </select>
+            </div>
+            <button (click)="resetFilters()" class="bi bi-trash"></button>
+            <button (click)="filterProduct()" class="bi bi-search"></button>
+        </div>
+        <div id="resultados">
+            <div *ngFor="let product of filteredProducts" id="resultado">
+                <button *ngIf="rol == 'encargado'" (click)="showPopUp = true; selectProduct = product; mensaje = 'Introduzca el porcentaje de descuento del producto:';">Modificar precio</button>
+                <label><strong>{{product.name}}, {{product.packaging}}</strong></label>
+                <label><strong>Consumidor: {{product.type}}, Precio: {{product.price}}€</strong></label>
+            </div>
+        </div>
+    </div>
+</div>

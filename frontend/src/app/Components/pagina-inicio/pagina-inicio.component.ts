@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/Services/api.service';
 
@@ -24,13 +24,16 @@ export class PaginaInicioComponent implements OnInit{
    * opcion - number - The specific section where the user is located
    */
   opcion!: number;
-  
+  /**
+   * isMobile - boolean - Check if the web is in a mobile phone or not
+   */
+  isMobile = false;
   /**
    * 
    * @param service - ApiService - Angular Service to use the API.
    * @param router - Router - Angular Class that allows the user to move through the different components.
    */
-  constructor(private service: ApiService, private router: Router) {}
+  constructor(private service: ApiService, private router: Router, private el: ElementRef, private renderer: Renderer2) {}
 
   /**
    * Method that executes before the view is loaded.
@@ -38,7 +41,23 @@ export class PaginaInicioComponent implements OnInit{
    */
   ngOnInit(): void {
     this.username = this.service.username.value;
-    this.rol = this.service.rol.value;
+    this.rol = this.service.rol.value.toLowerCase();
+    this.checkWindowSize();
+    this.service.option.subscribe(value => {
+      if(this.service.option.value !== 0){
+        this.opcion = this.service.option.value;
+        this.dentroSeccion = true;
+      }
+    })
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.checkWindowSize();
+  }
+  
+  checkWindowSize() {
+    this.isMobile = window.innerWidth <= 750;
   }
 
   /**

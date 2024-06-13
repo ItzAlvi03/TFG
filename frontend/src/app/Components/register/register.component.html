@@ -1,6 +1,6 @@
 <div id="content" class="w-100 d-flex justify-content-center align-items-center">
     <div id="loginContent" class="d-flex flex-column justify-content-center align-items-center">
-        <h2 class="mb-3">Login</h2>
+        <h2 class="mb-3">Register</h2>
         <div class="input-group mb-4 mt-2">
             <i class="p-2 bi bi-person-fill input-group-text" id="basic-addon1"></i>
             <input [(ngModel)]="inputNombre" type="text" class="form-control" placeholder="Nombre Usuario" aria-label="Username" aria-describedby="basic-addon1">
@@ -10,15 +10,15 @@
             <input [(ngModel)]="inputContrasenia" [attr.type]="mostrar ? 'password' : 'text'" name="contraseña" id="contrasenia" placeholder="Contraseña" class="form-control" aria-label="Amount (to the nearest dollar)">
             <i id="iconPassword" [ngClass]="mostrar ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'" (click)="mostrar = !mostrar" class="p-2 input-group-text"></i>
         </div>
-        <div id="checkbox" class="w-100 form-check mb-2">
-            <input class="form-check-input" type="checkbox" value="" [(ngModel)]="rememberMe" id="flexCheckDefault">
-            <label class="form-check-label" for="flexCheckDefault">
-              Recordarme
-            </label>
+        <div class="input-group mb-3">
+            <i class="p-2 bi bi-person-raised-hand input-group-text" id="basic-addon1"></i>
+            <select id="userType" [(ngModel)]="userType" name="userType" class="form-control" required>
+                <option *ngFor="let type of userTypes" [value]="type">{{ type }}</option>
+            </select>
         </div>
         <div class="mt-3" id="divButtons">
-            <button id="register" class="p-2" routerLink="/register">Crear cuenta</button>
-            <button class="p-2" (click)="iniciarSesion()">Iniciar Sesion</button>
+            <button id="login" class="p-2" routerLink="/login">Iniciar sesión</button>
+            <button class="p-2" (click)="crearCuenta()">Crear cuenta</button>
         </div>
     </div>
 </div>

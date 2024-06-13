@@ -84,7 +84,7 @@ select{
 }
 
 
-#resultado{
+#resultado, #resultado2{
     width: 100%;
     height: auto;
     display: flex;
@@ -94,7 +94,7 @@ select{
     border-bottom: 1px solid black;
 }
 
-#resultado button{
+#resultado button, #resultado2 button{
     background-color: var(--light-blue);
     border: white;
     font-weight: 700;
@@ -109,15 +109,15 @@ select{
     border-bottom-left-radius: 5px;
 }
 
-#resultado label{
+#resultado label, #resultado2 label{
     margin: 2%;
 }
 
-#resultado:last-child{
+#resultado:last-child, #resultado2:last-child{
     border-bottom: 0;
 }
 
-#clientType, #selectName, #selectPackaging{
+#clientType, #selectName, #selectPackaging, #select select{
     width: auto;
 }
 
@@ -149,14 +149,23 @@ select{
     margin-right: 10%;
 }
 
-#resultado button.bi.bi-plus-circle-dotted{
+#resultado2 button.bi.bi-file-earmark-arrow-down-fill{
     height: 100%;
     background-color: transparent;
     font-weight: 700;
-    color: red;
-    font-size: large;
+    color: var(--light-blue);
+    font-size: xx-large;
+    margin: 0;
     margin-left: 1%;
-    transform: rotate(45deg);
+}
+
+#resultado2 button{
+    height: auto;
+    width: auto;
+    font-weight: 700;
+    color: white;
+    border-radius: 5px;
+    margin: 2%;
 }
 
 #insertOrder{
@@ -178,6 +187,32 @@ select{
 
 .insert:hover{
     background-color: var(--blue);
+}
+
+#select{
+    margin: 3.5% 0;
+}
+#select select{
+    margin-right: 3%;
+}
+
+#select button{
+    background-color: var(--light-blue);
+    border: 0px solid white;
+    border-radius: 5px;
+    font-weight: 700;
+    color: white;
+    margin-left: 5%;
+}
+
+#invoiceType{
+    width: auto;
+    border-radius: 5px;
+}
+
+#resultado2 #invoiceType{
+    margin-right: 1%;
+    margin-left: 1%;
 }
 
 .no-insert{

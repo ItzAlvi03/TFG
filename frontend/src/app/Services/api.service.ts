@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +27,10 @@ export class ApiService {
    */
   public message = new BehaviorSubject<string>("");
   /**
+   * option - number - The option selected throw the menu component
+   */
+  public option = new BehaviorSubject<number>(0);
+  /**
    * API_URL - String - URL of the API that we are going to use
    */
   private API_URL: String = "http://127.0.0.1:5555";
@@ -46,6 +50,14 @@ export class ApiService {
    */
   userLogin(user: any): Observable<any>{
     return this.http.post(this.API_URL + '/userLogin', user);
+  }
+
+  /**
+   * @param user 
+   * @returns success or a message with the error
+   */
+  createAccount(user: any): Observable<any>{
+    return this.http.post(this.API_URL + '/createAccount', user);
   }
   
   /**
@@ -80,6 +92,66 @@ export class ApiService {
    */
   insertOrder(order: any): Observable<any> {
     return this.http.post(this.API_URL + '/insertOrder', order);
+  }
+
+  /**
+   * @param client
+   * @returns invoices or none
+   */
+  searchClientInvoices(client: any): Observable<any> {
+    return this.http.post(this.API_URL + "/searchClientInvoices", client);
+  }
+
+  /**
+   * @param invoice
+   * @returns successfully or none
+   */
+  changeInvoiceType(invoice: any): Observable<any> {
+    return this.http.post(this.API_URL + "/changeInvoiceType", invoice);
+  }
+  
+  /**
+   * @param client
+   * @returns products or none
+   */
+  getDiscountProducts(client: any): Observable<any> {
+    return this.http.post(this.API_URL + "/getDiscountProducts", client);
+  }
+  
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  addProductDiscount(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/addProductDiscount", data);
+  }
+  
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  deleteDiscount(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/deleteDiscount", data);
+  }
+
+  /**
+   * @param invoice
+   * @returns invoice file or none
+   */
+  downloadInvoice(invoice: any): Observable<any> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${invoice.token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(this.API_URL + "/downloadInvoice", invoice, { headers: headers, responseType: 'blob' });
+  }
+   
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  changeProductPrice(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/changeProductPrice", data);
   }
 
   /**

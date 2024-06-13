@@ -23,9 +23,9 @@ span{
 }
 
 #buscador{
-    width: auto;
-    max-width: 400px;
     margin-top: 5%;
+    width: auto;
+    max-width: 300px;
     border-radius: 5px;
     background-color: white;
     box-shadow: var(--box-shadow);
@@ -94,13 +94,6 @@ select{
     border-bottom: 1px solid black;
 }
 
-#resultado button{
-    background-color: var(--light-blue);
-    border: white;
-    font-weight: 700;
-    color: white;
-}
-
 #resultado:first-child button{
     border-top-left-radius: 5px;
 }
@@ -117,7 +110,7 @@ select{
     border-bottom: 0;
 }
 
-#clientType, #selectName, #selectPackaging{
+#clientType, #selectName, #selectPackaging, #select select{
     width: auto;
 }
 
@@ -149,14 +142,16 @@ select{
     margin-right: 10%;
 }
 
-#resultado button.bi.bi-plus-circle-dotted{
-    height: 100%;
-    background-color: transparent;
+#resultado button{
+    height: auto;
+    width: auto;
+    background-color: var(--light-blue);
+    border: white;
+    color: white;
     font-weight: 700;
-    color: red;
-    font-size: large;
-    margin-left: 1%;
-    transform: rotate(45deg);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2%;
 }
 
 #insertOrder{
@@ -178,6 +173,22 @@ select{
 
 .insert:hover{
     background-color: var(--blue);
+}
+
+#select{
+    margin: 3.5% 0;
+}
+#select select{
+    margin-right: 3%;
+}
+
+#select button{
+    background-color: var(--light-blue);
+    border: 0px solid white;
+    border-radius: 5px;
+    font-weight: 700;
+    color: white;
+    margin-left: 5%;
 }
 
 .no-insert{

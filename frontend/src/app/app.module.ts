@@ -14,6 +14,12 @@ import { TokenInterceptor } from './Interceptor/token.interceptor';
 import { AlertComponent } from './Components/alert/alert.component';
 import { InsertarPedidoComponent } from './Components/pagina-inicio/clientes/insertar-pedido/insertar-pedido.component';
 import { SpinnerComponent } from './Components/spinner/spinner.component';
+import { RegisterComponent } from './Components/register/register.component';
+import { ListaFacturasComponent } from './Components/pagina-inicio/lista-facturas/lista-facturas.component';
+import { DiscountsComponent } from './Components/pagina-inicio/clientes/discounts/discounts.component';
+import { InteractivePopUpComponent } from './Components/interactive-pop-up/interactive-pop-up.component';
+import { ListaProductosComponent } from './Components/pagina-inicio/lista-productos/lista-productos.component';
+import { MenuComponent } from './Components/pagina-inicio/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +29,13 @@ import { SpinnerComponent } from './Components/spinner/spinner.component';
     DarAltaComponent,
     AlertComponent,
     InsertarPedidoComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    RegisterComponent,
+    ListaFacturasComponent,
+    DiscountsComponent,
+    InteractivePopUpComponent,
+    ListaProductosComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,
