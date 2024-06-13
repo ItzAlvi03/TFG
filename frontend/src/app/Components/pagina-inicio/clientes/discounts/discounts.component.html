@@ -34,7 +34,7 @@
     <div *ngIf="clientSelected" id="resultados">
         <div *ngFor="let product of products" id="resultado">
             <button (click)="showPopUp = 1; finalProduct = product; mensaje = 'Introduzca el porcentaje de descuento del producto:';" *ngIf="mostrar == 1">Añadir descuento</button>
-            <button (click)="showPopUp = 2; finalProduct = product; mensaje = '¿Está seguro de que desea borrar el descuento de este producto?'" class="delete" *ngIf="mostrar == 2">Borrar descuento</button>
+            <button style="background-color: red;" (click)="showPopUp = 2; finalProduct = product; mensaje = '¿Está seguro de que desea borrar el descuento de este producto?'" class="delete" *ngIf="mostrar == 2">Borrar descuento</button>
             <label><strong>{{ product.name }}, {{ product.packaging }}</strong><strong *ngIf="mostrar == 2">, Descuento: {{product.discount}}%</strong></label>
         </div>
     </div>

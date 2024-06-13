@@ -27,6 +27,10 @@ export class ApiService {
    */
   public message = new BehaviorSubject<string>("");
   /**
+   * option - number - The option selected throw the menu component
+   */
+  public option = new BehaviorSubject<number>(0);
+  /**
    * API_URL - String - URL of the API that we are going to use
    */
   private API_URL: String = "http://127.0.0.1:5555";
@@ -140,6 +144,14 @@ export class ApiService {
       'Content-Type': 'application/json'
     });
     return this.http.post(this.API_URL + "/downloadInvoice", invoice, { headers: headers, responseType: 'blob' });
+  }
+   
+  /**
+   * @param data
+   * @returns successfully or none
+   */
+  changeProductPrice(data: any): Observable<any> {
+    return this.http.post(this.API_URL + "/changeProductPrice", data);
   }
 
   /**

@@ -23,8 +23,9 @@ span{
 }
 
 #buscador{
+    width: auto;
+    max-width: 400px;
     margin-top: 5%;
-    width: 400px;
     border-radius: 5px;
     background-color: white;
     box-shadow: var(--box-shadow);

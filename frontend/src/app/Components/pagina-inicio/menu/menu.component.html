@@ -1,0 +1,19 @@
+<div id="desplegable">
+    <i class="bi bi-list" (click)="abrirMenu()"></i>
+</div>
+<div id="menu">
+    <div id="opciones" #opciones>
+        <div class="d-flex flex-row justify-content-end m-4">
+            <i class="bi bi-x-lg" (click)="cerrarMenu(0)"></i>
+        </div>
+        <div class="d-flex justify-content-center align-items-center">
+            <ul class="mt-4">
+                <li (click)="cerrarMenu(1)" class="p-1 m-4">Dar de alta un cliente</li>
+                <li *ngIf="rol == 'encargado'" (click)="cerrarMenu(2)" class="p-1 m-4">Descuentos de clientes</li>
+                <li (click)="cerrarMenu(3)" class="p-1 m-4">Lista de productos</li>
+                <li (click)="cerrarMenu(4)" class="p-1 m-4">Insertar pedido</li>
+                <li (click)="cerrarMenu(5)" class="p-1 m-4">Lista de Facturas</li>
+            </ul>
+        </div>
+    </div>
+</div>

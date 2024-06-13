@@ -18,6 +18,8 @@ import { RegisterComponent } from './Components/register/register.component';
 import { ListaFacturasComponent } from './Components/pagina-inicio/lista-facturas/lista-facturas.component';
 import { DiscountsComponent } from './Components/pagina-inicio/clientes/discounts/discounts.component';
 import { InteractivePopUpComponent } from './Components/interactive-pop-up/interactive-pop-up.component';
+import { ListaProductosComponent } from './Components/pagina-inicio/lista-productos/lista-productos.component';
+import { MenuComponent } from './Components/pagina-inicio/menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,8 @@ import { InteractivePopUpComponent } from './Components/interactive-pop-up/inter
     ListaFacturasComponent,
     DiscountsComponent,
     InteractivePopUpComponent,
+    ListaProductosComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,

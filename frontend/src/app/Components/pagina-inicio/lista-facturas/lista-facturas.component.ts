@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Client } from 'src/app/Interfaces/client';
 import { Invoices } from 'src/app/Interfaces/invoices';
 import { Product } from 'src/app/Interfaces/product';
@@ -10,7 +10,7 @@ import { ApiService } from 'src/app/Services/api.service';
   templateUrl: './lista-facturas.component.html',
   styleUrls: ['./lista-facturas.component.css']
 })
-export class ListaFacturasComponent {
+export class ListaFacturasComponent implements OnInit{
 /**
 * clientTypes - string[] - Array de string con los tipos de clientes que existen
 */
@@ -55,12 +55,19 @@ invoices!: Invoices[];
  * resultados - boolean - Determinates if there are clients on the last search
  */
 resultados: boolean = false;
-
+/**
+ * rol - string - The user's rol
+ */
+rol: string = "";
 /**
  * 
  * @param service - ApiService - Angular Service to use the API.
  */
 constructor(private service: ApiService) {}
+
+  ngOnInit(): void {
+    this.rol = this.service.rol.value.toLowerCase();
+  }
 
 /**
  * Method that search clients
@@ -169,7 +176,6 @@ async downloadInvoice(invoice: Invoices){
 
   try{
     const file = await this.service.downloadInvoice(data).toPromise();
-    console.log(file)
     if(file){
       var url = window.URL.createObjectURL(file);
       var a = document.createElement('a');
