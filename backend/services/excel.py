@@ -8,6 +8,9 @@ def create_invoice(client, date, products, order_id):
         template_excel = "src/excel/plantilla.xlsx"
         save_path = f'src/excel/facturas/{str(order_id)}_{date}.xlsx'
 
+        if not os.path.exists("src/excel/facturas"):
+            os.makedirs("src/excel/facturas")
+
         wb = load_workbook(template_excel)
         ws = wb.active
 
@@ -69,3 +72,5 @@ def get_invoice(order_id, date):
         download_name=f'Factura_{date}.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+
+create_invoice("", "", "", "")
