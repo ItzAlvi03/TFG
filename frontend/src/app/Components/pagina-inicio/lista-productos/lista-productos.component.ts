@@ -105,8 +105,13 @@ filterProduct() {
     avaliableProducts = Array.from(filteredProducts);
   }
   if(this.clientType !== ""){
-    const filteredProducts = this.products.filter(product => product.type === this.clientType);
-    avaliableProducts = Array.from(filteredProducts);
+    if(avaliableProducts.length > 0){
+      const filteredProducts = avaliableProducts.filter(product => product.type === this.clientType);
+      avaliableProducts = Array.from(filteredProducts);
+    } else{
+      const filteredProducts = this.products.filter(product => product.type === this.clientType);
+      avaliableProducts = Array.from(filteredProducts);
+    }
   }
 
   if(avaliableProducts.length > 0) this.filteredProducts = avaliableProducts;
