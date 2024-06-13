@@ -26,11 +26,11 @@ def insert_client(dbClients, client):
             """
             cursor.execute(insert_sql, client)
             connection.commit()
-            return "client_inserted"
+            return "El cliente se añadió correctamente."
         except sqlite3.Error:
             return "insert_error"
     
-#Method to see all clients with a specific name
+#Method to get all clients with a specific name
 def search_all_clients(dbClients, name, client_type):
     try:
         connection = sqlite3.connect(dbClients)
@@ -41,8 +41,19 @@ def search_all_clients(dbClients, name, client_type):
     except sqlite3.Error:
         return None
     
-#Method to see all products with a specific client_type
-def search_all_products(dbClients, client_type):
+#Method to get all products
+def search_all_products(dbClients):
+    try:
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        check_sql = 'SELECT Nombre, Embalaje, Consumidor, Precio FROM Productos'
+        cursor.execute(check_sql)
+        return cursor.fetchall()
+    except sqlite3.Error:
+        return None
+    
+#Method to get all products with a specific client_type
+def search_all_products_type(dbClients, client_type):
     try:
         connection = sqlite3.connect(dbClients)
         cursor = connection.cursor()
@@ -461,3 +472,18 @@ def get_invoice_info(dbClients, invoice_id):
         return cursor.fetchone()
     except sqlite3.Error:
         return None
+    
+#Updates the product's price
+def update_product_price(dbClients, product, price):
+    try:
+        connection = sqlite3.connect(dbClients)
+        cursor = connection.cursor()
+        cursor.execute("""
+            UPDATE Productos
+            SET Precio = ?
+            WHERE Nombre = ? AND Embalaje = ? AND Consumidor = ?
+        """, (price, product['name'], product['packaging'], product['type']))
+        connection.commit()
+        return jsonify({"mensaje": "Se ha modificado el precio del producto correctamente."})
+    except sqlite3.Error:
+        return jsonify({"error", "Ocurrió un error modificando el precio."}), 400

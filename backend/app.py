@@ -42,32 +42,18 @@ def token_required(func):
 
     return decorated
 
-#region get info from config.json
-# with open ("src/config.json", "r") as config_file:
-#     config = json.load(config_file)
-#endregion
+#   SUMMARY: Method to check if user has rol "Encargado"
+#   RETURN: response 200(with the token info) or response 400 (invalid token)
+#   VALUES: func(all the data from the endpoint)
+def encargado_rol(func):
+    @wraps(func)
+    def decorated(payload, *args, **kwargs):
+        if 'rol' in payload and str(payload['rol']).lower() == 'encargado':
+            return func(payload, *args, **kwargs)
+        else:
+            return jsonify({'error': 'Permiso denegado. No eres un encargado.'}), 400
 
-#region Swagger config
-# SWAGGER_URL = config['swagger']
-# API_URL = config['local_api_swagger']
-# swaggerui_blueprint = get_swaggerui_blueprint(
-#     SWAGGER_URL,
-#     API_URL,
-#     config={
-#         'app.name': "Dulces Trinidad API"
-#     }
-# )
-# app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-#endregion
-
-#endregion
-
-#region API endpoints
-
-# @app.route('/swagger.json')
-# def index():
-#     with open('swagger.json', 'r') as f):
-#         return jsonify(json.load(f))
+    return decorated
     
 #   SUMMARY: Endpoint to see if exists users in users.db
 #   RETURN: response 200(with the user) or response 500 (empty with no user)
@@ -127,7 +113,7 @@ def insert_clients(payload):
         bank_account = data['bank_account']
 
         if not all([name, email, cif, address, client_type, bank_account]):
-            return jsonify({'error': 'not_enough_data.'}), 400
+            return jsonify({'error': 'Faltan datos para insertar el cliente.'}), 400
         
         client = (
             name,
@@ -139,9 +125,9 @@ def insert_clients(payload):
         )
         result = clients.insert_client(dbClients,client)
         if result == "client_exists":
-            return jsonify({"error": result}), 400
+            return jsonify({"error": "El cliente ya existe."}), 400
         elif result == "insert_error":
-            return jsonify({"error": result}), 400
+            return jsonify({"error": "Ocurrió un error al insertar el cliente, inténtelo de nuevo."}), 400
         else:
             return jsonify({"mensaje": result})
         
@@ -187,20 +173,35 @@ def get_all_products(payload):
     try:
         data = request.json
         client_type = data['type']
-        
-        result = clients.search_all_products(dbClients, client_type)
+        result = []
+
+        if client_type == "all":
+            result = clients.search_all_products(dbClients)
+        else:
+            result = clients.search_all_products_type(dbClients, client_type)
+
         if result is not None and len(result) > 0:
             final_result = []
+            product_dict = {}
             for product in result:
-                product_dict = {
-                    "name": product[0],
-                    "packaging": product[1],
-                    "price": product[2]
-                }
+                if client_type == "all":
+                    product_dict = {
+                        "name": product[0],
+                        "packaging": product[1],
+                        "type": product[2],
+                        "quantity": 1,
+                        "price": product[3]
+                    }
+                else:
+                    product_dict = {
+                        "name": product[0],
+                        "packaging": product[1],
+                        "price": product[2]
+                    }
                 final_result.append(product_dict)
             return jsonify({"products": final_result})
         else:
-            return jsonify({'error': 'No se ha podido encontrar un producto con esos datos.'}), 400
+            return jsonify({'error': 'No se ha podido encontrar productos.'}), 400
         
     except Exception as e:
         return jsonify({'error': f'Error al buscar productos: {e}'}), 500
@@ -270,6 +271,7 @@ def get_all_client_invoices(payload):
 #   VALUES: products(order info)
 @app.route('/changeInvoiceType', methods=['POST'])
 @token_required
+@encargado_rol
 def change_invoice_type(payload):
     try:
         data = request.json
@@ -307,6 +309,7 @@ def get_discount_products(payload):
 #   VALUES: data info
 @app.route('/addProductDiscount', methods=['POST'])
 @token_required
+@encargado_rol
 def add_product_discount(payload):
     try:
         data = request.json
@@ -326,6 +329,7 @@ def add_product_discount(payload):
 #   VALUES: data info
 @app.route('/deleteDiscount', methods=['POST'])
 @token_required
+@encargado_rol
 def delete_discount(payload):
     try:
         data = request.json
@@ -357,6 +361,23 @@ def download_invoice(payload):
         return get_invoice(info[0], info[1])
     except Exception:
         return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
+       
+#   SUMMARY: Endpoint to update the product's price
+#   RETURN: response 200 or response 400/500
+#   POST /changeProductPrice
+#   VALUES: data info
+@app.route('/changeProductPrice', methods=['POST'])
+@token_required
+@encargado_rol
+def change_product_price(payload):
+    try:
+        data = request.json
+        product = data['product']
+        price = data['price']
+
+        return clients.update_product_price(dbClients, product, price)
+    except Exception:
+        return jsonify({'error': 'Error al agregar un descuento al producto.'}), 500
    
 #   SUMMARY: Endpoint to check a token
 #   RETURN: response 200(with info about user) or response 400 (token invalid)
@@ -365,12 +386,12 @@ def download_invoice(payload):
 @app.route('/auth', methods=['POST'])
 @token_required
 def authenticator(payload):
-    print(payload)
     return jsonify({
         "username": payload.get('username'),
         "rol": payload.get('rol')
     })
 #endregion
+
 #Start the server
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5555, debug=True)

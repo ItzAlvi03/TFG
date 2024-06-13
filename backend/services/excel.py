@@ -46,7 +46,7 @@ def create_invoice(client, date, products, order_id):
         ws['G43'] = str(round(total_price, 2)) + "€"
         ws['G44'] = str(round(total_discount, 2)) + "€"
         # The IVA for these types of products is 10% of total price(After the discounts)
-        iva = round(total_to_pay, 2) * 0.1
+        iva = round(total_price, 2) * 0.1
         ws['G45'] = str(round(iva, 2)) + "€"
         ws['G46'] = str(round((total_to_pay + iva),2)) + "€"
         wb.save(save_path)
